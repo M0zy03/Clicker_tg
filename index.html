@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial;
+}
+#game {
+  text-align: center;
+}
+#score {
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+button {
+  font-size: 30px;
+  padding: 20px 40px;
+  border-radius: 20px;
+  border: none;
+  background: orange;
+}
+</style>
+</head>
+<body>
+
+<div id="game">
+  <div id="score">0</div>
+  <button onclick="addPoint()">ЖМИ</button>
+</div>
+
+<script>
+let score = 0;
+
+function addPoint() {
+  score++;
+  document.getElementById("score").innerText = score;
+}
+
+Telegram.WebApp.expand();
+</script>
+
+</body>
+</html>
