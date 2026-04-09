@@ -72,12 +72,10 @@ body {
 /* частицы */
 .particle {
   position: absolute;
-  width: 6px;
-  height: 6px;
   border-radius: 50%;
-  background: orange;
   pointer-events: none;
-  animation: explode 0.6s ease-out forwards;
+  background: radial-gradient(circle, #ffcc00, #ff3300);
+  animation: explode 0.7s ease-out forwards;
 }
 
 @keyframes explode {
@@ -119,24 +117,33 @@ function createPlus(x, y) {
 }
 
 function createExplosion(x, y) {
-  for (let i = 0; i < 12; i++) {
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
+
+  for (let i = 0; i < 40; i++) {
     const p = document.createElement("div");
     p.className = "particle";
 
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = Math.random() * 60 + 20;
+    const targetX = Math.random() * screenW;
+    const targetY = Math.random() * screenH;
 
-    const dx = Math.cos(angle) * distance + "px";
-    const dy = Math.sin(angle) * distance + "px";
+    const dx = targetX - x + "px";
+    const dy = targetY - y + "px";
 
     p.style.left = x + "px";
     p.style.top = y + "px";
+
     p.style.setProperty("--x", dx);
     p.style.setProperty("--y", dy);
 
+    // случайный размер
+    const size = Math.random() * 8 + 4;
+    p.style.width = size + "px";
+    p.style.height = size + "px";
+
     effects.appendChild(p);
 
-    setTimeout(() => p.remove(), 600);
+    setTimeout(() => p.remove(), 700);
   }
 }
 
