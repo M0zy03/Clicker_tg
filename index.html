@@ -15,6 +15,19 @@ body {
   height: 100vh;
   font-family: Arial;
   overflow: hidden;
+  transition: background 0.5s;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(5px,-5px); }
+  50% { transform: translate(-5px,5px); }
+  75% { transform: translate(5px,5px); }
+  100% { transform: translate(0,0); }
 }
 
 #game {
@@ -27,7 +40,6 @@ body {
   transition: transform 0.1s;
 }
 
-/* картинка */
 #clicker {
   width: 220px;
   height: 220px;
@@ -36,7 +48,6 @@ body {
 
   user-select: none;
   -webkit-user-select: none;
-  -webkit-touch-callout: none;
   -webkit-user-drag: none;
 
   transition: transform 0.08s ease, filter 0.15s;
@@ -47,7 +58,6 @@ body {
   filter: brightness(1.4);
 }
 
-/* слой эффектов */
 #effects {
   position: fixed;
   top: 0;
@@ -55,10 +65,8 @@ body {
   pointer-events: none;
 }
 
-/* +1 */
 .plus {
   position: absolute;
-  color: #00ffcc;
   font-size: 28px;
   font-weight: bold;
   animation: floatUp 0.6s ease-out forwards;
@@ -69,7 +77,6 @@ body {
   100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
 }
 
-/* частицы */
 .particle {
   position: absolute;
   border-radius: 50%;
@@ -79,14 +86,8 @@ body {
 }
 
 @keyframes explode {
-  0% {
-    opacity: 1;
-    transform: translate(0,0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--x), var(--y)) scale(0.5);
-  }
+  0% { opacity: 1; transform: translate(0,0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.5); }
 }
 </style>
 </head>
@@ -100,15 +101,21 @@ body {
 
 <div id="effects"></div>
 
+<!-- звук -->
+<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
+
 <script>
 let score = 0;
 const scoreEl = document.getElementById("score");
 const effects = document.getElementById("effects");
+const sound = document.getElementById("clickSound");
 
-function createPlus(x, y) {
+function createPlus(x, y, isCrit=false) {
   const el = document.createElement("div");
   el.className = "plus";
-  el.innerText = "+1";
+  el.innerText = isCrit ? "CRIT!" : "+1";
+  el.style.color = isCrit ? "#ff0000" : "#00ffcc";
+
   el.style.left = x + "px";
   el.style.top = y + "px";
 
@@ -116,11 +123,11 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
-function createExplosion(x, y) {
+function createExplosion(x, y, power=40) {
   const screenW = window.innerWidth;
   const screenH = window.innerHeight;
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < power; i++) {
     const p = document.createElement("div");
     p.className = "particle";
 
@@ -136,32 +143,56 @@ function createExplosion(x, y) {
     p.style.setProperty("--x", dx);
     p.style.setProperty("--y", dy);
 
-    // случайный размер
     const size = Math.random() * 8 + 4;
     p.style.width = size + "px";
     p.style.height = size + "px";
 
     effects.appendChild(p);
-
     setTimeout(() => p.remove(), 700);
   }
 }
 
+function screenShake() {
+  document.body.classList.add("shake");
+  setTimeout(() => document.body.classList.remove("shake"), 300);
+}
+
+function updateBackground() {
+  if (score > 100) {
+    document.body.style.background = "radial-gradient(circle, #001f3f, #000)";
+  }
+  if (score > 300) {
+    document.body.style.background = "radial-gradient(circle, #3f001f, #000)";
+  }
+  if (score > 600) {
+    document.body.style.background = "radial-gradient(circle, #003f1f, #000)";
+  }
+}
+
 document.getElementById("clicker").addEventListener("click", (e) => {
-  score++;
+
+  let isCrit = Math.random() < 0.15; // 15% шанс крита
+  let add = isCrit ? 5 : 1;
+
+  score += add;
   scoreEl.innerText = score;
 
-  // анимация счёта
-  scoreEl.style.transform = "scale(1.15)";
-  setTimeout(() => {
-    scoreEl.style.transform = "scale(1)";
-  }, 80);
+  scoreEl.style.transform = "scale(1.2)";
+  setTimeout(() => scoreEl.style.transform = "scale(1)", 80);
 
-  createPlus(e.clientX, e.clientY);
-  createExplosion(e.clientX, e.clientY);
+  createPlus(e.clientX, e.clientY, isCrit);
+  createExplosion(e.clientX, e.clientY, isCrit ? 80 : 40);
+
+  if (isCrit) screenShake();
+
+  // звук
+  sound.currentTime = 0;
+  sound.play();
+
+  updateBackground();
 
   if (Telegram.WebApp.HapticFeedback) {
-    Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+    Telegram.WebApp.HapticFeedback.impactOccurred(isCrit ? "heavy" : "light");
   }
 });
 
