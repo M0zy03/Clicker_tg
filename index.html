@@ -34,25 +34,20 @@ body {
   border-radius: 20px;
   cursor: pointer;
 
-  /* ОТКЛЮЧАЕМ ВЫДЕЛЕНИЕ */
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-
-  /* ОТКЛЮЧАЕМ ПЕРЕТАСКИВАНИЕ */
-  pointer-events: auto;
   -webkit-user-drag: none;
 
   transition: transform 0.08s ease, filter 0.15s;
 }
 
-/* нажатие */
 #clicker:active {
   transform: scale(0.85);
   filter: brightness(1.4);
 }
 
-/* контейнер для +1 */
+/* слой эффектов */
 #effects {
   position: fixed;
   top: 0;
@@ -70,13 +65,29 @@ body {
 }
 
 @keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+}
+
+/* частицы */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: orange;
+  pointer-events: none;
+  animation: explode 0.6s ease-out forwards;
+}
+
+@keyframes explode {
   0% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translate(0,0) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translateY(-50px) scale(1.5);
+    transform: translate(var(--x), var(--y)) scale(0.5);
   }
 }
 </style>
@@ -96,31 +107,37 @@ let score = 0;
 const scoreEl = document.getElementById("score");
 const effects = document.getElementById("effects");
 
-// ПУЛ объектов (чтобы не лагало)
-const pool = [];
-
 function createPlus(x, y) {
-  let el;
-
-  if (pool.length > 0) {
-    el = pool.pop();
-  } else {
-    el = document.createElement("div");
-    el.className = "plus";
-    effects.appendChild(el);
-  }
-
+  const el = document.createElement("div");
+  el.className = "plus";
   el.innerText = "+1";
   el.style.left = x + "px";
   el.style.top = y + "px";
 
-  el.style.animation = "none";
-  el.offsetHeight; // перезапуск анимации
-  el.style.animation = "floatUp 0.6s ease-out forwards";
+  effects.appendChild(el);
+  setTimeout(() => el.remove(), 600);
+}
 
-  setTimeout(() => {
-    pool.push(el);
-  }, 600);
+function createExplosion(x, y) {
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement("div");
+    p.className = "particle";
+
+    const angle = Math.random() * 2 * Math.PI;
+    const distance = Math.random() * 60 + 20;
+
+    const dx = Math.cos(angle) * distance + "px";
+    const dy = Math.sin(angle) * distance + "px";
+
+    p.style.left = x + "px";
+    p.style.top = y + "px";
+    p.style.setProperty("--x", dx);
+    p.style.setProperty("--y", dy);
+
+    effects.appendChild(p);
+
+    setTimeout(() => p.remove(), 600);
+  }
 }
 
 document.getElementById("clicker").addEventListener("click", (e) => {
@@ -134,10 +151,10 @@ document.getElementById("clicker").addEventListener("click", (e) => {
   }, 80);
 
   createPlus(e.clientX, e.clientY);
+  createExplosion(e.clientX, e.clientY);
 
-  // вибрация в Telegram
   if (Telegram.WebApp.HapticFeedback) {
-    Telegram.WebApp.HapticFeedback.impactOccurred("light");
+    Telegram.WebApp.HapticFeedback.impactOccurred("medium");
   }
 });
 
