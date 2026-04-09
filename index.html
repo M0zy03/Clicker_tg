@@ -159,6 +159,10 @@ function check67() {
     achSound.currentTime = 0;
     achSound.play();
 
+    if (navigator.vibrate) {
+      navigator.vibrate(3000); // вибрация на 3 секунды
+    }
+
     if (Telegram.WebApp.HapticFeedback) {
       Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
     }
