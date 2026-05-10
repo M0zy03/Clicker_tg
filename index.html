@@ -2,22 +2,34 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-body {
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
   background: #000;
   background-size: cover;
   background-position: center;
-  color: white;
+  transition: background 0.5s;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   font-family: Arial;
-  overflow: hidden;
-  transition: background 0.5s;
 }
 
 #game {
@@ -25,10 +37,10 @@ body {
 }
 
 #score {
-  font-size: 50px;
+  font-size: 70px;
   margin-bottom: 20px;
+  color: black;
   transition: transform 0.1s;
-  color: black; /* черный цвет */
 }
 
 #clicker {
@@ -36,9 +48,11 @@ body {
   height: 220px;
   border-radius: 20px;
   cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
   -webkit-user-drag: none;
+}
+
+#clicker:active {
+  transform: scale(0.85);
 }
 
 #effects {
@@ -52,6 +66,7 @@ body {
   position: absolute;
   font-size: 28px;
   font-weight: bold;
+  color: #00ffcc;
   animation: floatUp 0.6s ease-out forwards;
 }
 
@@ -66,7 +81,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.5);
-  font-size: 600px; /* стало больше */
+  font-size: 600px;
   font-weight: bold;
   color: gold;
   opacity: 0;
@@ -75,23 +90,13 @@ body {
 }
 
 .show67 {
-  animation: show67 3s ease-out; /* стало дольше */
+  animation: show67 3s ease-out;
 }
 
 @keyframes show67 {
   0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
-  70% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-}
-
-.show67 {
-  animation: show67 1s ease-out;
-}
-
-@keyframes show67 {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.4); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
 }
 </style>
@@ -107,11 +112,11 @@ body {
 <div id="effects"></div>
 <div id="bigEvent">67</div>
 
-<!-- звук клика -->
+<!-- звук -->
 <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-16.mp3"></audio>
 
-<!-- звук ачивки (можешь заменить) -->
-<audio id="achSound" src="https://github.com/M0zy03/Clicker_tg/raw/refs/heads/main/six_seven.mp3"></audio>
+<!-- ВАЖНО: правильная ссылка GitHub -->
+<audio id="achSound" src="https://raw.githubusercontent.com/M0zy03/Clicker_tg/main/six_seven.mp3"></audio>
 
 <script>
 let score = 0;
@@ -123,23 +128,10 @@ const clickSound = document.getElementById("clickSound");
 const achSound = document.getElementById("achSound");
 const bigEvent = document.getElementById("bigEvent");
 
-// ТВОИ ФОНЫ
 const backgrounds = [
-  "bg1.jpg",
-  "bg2.jpg",
-  "bg3.jpg",
-  "bg4.jpg",
-  "bg5.jpg",
-  "bg6.jpg",
-  "bg7.jpg",
-  "bg8.jpg",
-  "bg9.jpg",
-  "bg10.jpg",
-  "bg11.jpg",
-  "bg12.jpg",
-  "bg13.jpg",
-  "bg14.jpg",
-  "bg15.jpg"
+  "bg1.jpg","bg2.jpg","bg3.jpg","bg4.jpg","bg5.jpg",
+  "bg6.jpg","bg7.jpg","bg8.jpg","bg9.jpg","bg10.jpg",
+  "bg11.jpg","bg12.jpg","bg13.jpg","bg14.jpg","bg15.jpg"
 ];
 
 function updateBackground() {
@@ -154,18 +146,19 @@ function updateBackground() {
 function check67() {
   if (score % 100 === 67) {
     bigEvent.classList.remove("show67");
-    void bigEvent.offsetWidth; // перезапуск анимации
+    void bigEvent.offsetWidth;
     bigEvent.classList.add("show67");
 
     achSound.currentTime = 0;
     achSound.play();
 
-    if (navigator.vibrate) {
-      navigator.vibrate(3000); // вибрация на 3 секунды
-    }
-
+    // вибрация
     if (Telegram.WebApp.HapticFeedback) {
       Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
+    }
+
+    if (navigator.vibrate) {
+      navigator.vibrate([200,100,200,100,800]); // лучше чем просто 3000
     }
   }
 }
@@ -181,7 +174,10 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
-document.getElementById("clicker").addEventListener("click", (e) => {
+// 🔥 БЫСТРЫЙ ТАП (вместо click)
+document.getElementById("clicker").addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+
   score++;
   scoreEl.innerText = score;
 
