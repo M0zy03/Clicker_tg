@@ -26,7 +26,7 @@ body {
   font-family: 'Press Start 2P', monospace;
   color: #b7c9a9;
 
-  /* 🔥 ВСТАВЬ СВОЙ ФОН */
+  /* 🔥 ФОН */
   background: url("bg_main.png") center/cover no-repeat;
 }
 
@@ -41,7 +41,7 @@ body::after {
   pointer-events: none;
 }
 
-/* ОСНОВНОЙ БЛОК */
+/* ОСНОВА */
 #game {
   width: 100%;
   max-width: 420px;
@@ -85,7 +85,7 @@ body::after {
   background: #b7c9a9;
 }
 
-/* ЦЕНТР (КНОПКА) */
+/* ЦЕНТР */
 .center {
   flex: 1;
   display: flex;
@@ -96,22 +96,24 @@ body::after {
 #clicker {
   width: 220px;
   height: 220px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
-  text-align: center;
-  color: black;
-
   cursor: pointer;
-
-  /* 🔥 ВСТАВЬ СВОЮ КНОПКУ */
-  background: url("button.png") center/cover no-repeat;
 }
 
-#clicker:active {
-  transform: scale(0.95);
+/* 🔥 МОНЕТКА */
+#coin {
+  width: 220px;
+  height: 220px;
+
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+#clicker:active #coin {
+  transform: scale(0.9);
 }
 
 /* НИЖНЕЕ МЕНЮ */
@@ -122,14 +124,18 @@ body::after {
 
 .menu-btn {
   flex: 1;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   border: 2px solid #6f7f5f;
-  padding: 10px;
+  padding: 15px 0;
 }
 
+/* 🔥 ИКОНКИ */
 .menu-btn img {
-  width: 24px;
-  margin-bottom: 8px;
+  width: 28px;
+  height: 28px;
 }
 
 /* +1 */
@@ -172,7 +178,8 @@ body::after {
   <!-- ЦЕНТР -->
   <div class="center">
     <div id="clicker">
-      CLICK<br>ME
+      <!-- 🔥 ВСТАВЬ СЮДА МОНЕТКУ -->
+      <img src="coin.png" id="coin">
     </div>
   </div>
 
@@ -180,18 +187,18 @@ body::after {
   <div class="bottom-menu">
 
     <div class="menu-btn">
-      <img src="upgrade.png"> <!-- 🔥 ИКОНКА -->
-      UPGRADES
+      <!-- 🔥 ИКОНКА 1 -->
+      <img src="upgrade.png">
     </div>
 
     <div class="menu-btn">
+      <!-- 🔥 ИКОНКА 2 -->
       <img src="stats.png">
-      STATS
     </div>
 
     <div class="menu-btn">
+      <!-- 🔥 ИКОНКА 3 -->
       <img src="trophy.png">
-      ACHIEVE
     </div>
 
   </div>
@@ -222,7 +229,7 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
-/* БЫСТРЫЙ ТАП (для Telegram) */
+/* ТАП */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
