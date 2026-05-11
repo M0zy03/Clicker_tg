@@ -7,46 +7,53 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-<!-- ПИКСЕЛЬНЫЙ ШРИФТ -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   font-family: 'Press Start 2P', monospace;
   color: #b7c9a9;
-  overflow: hidden;
 
-  /* 🔥 ВСТАВЬ СЮДА ФОН (главный экран) */
+  /* 🔥 ВСТАВЬ СВОЙ ФОН */
   background: url("bg_main.png") center/cover no-repeat;
 }
 
-/* 🔥 ЭФФЕКТ ЗЕРНА (очень важно для ретро) */
+/* ШУМ */
 body::after {
   content: "";
   position: fixed;
   width: 100%;
   height: 100%;
-  background: url("noise.png"); /* ← сюда картинку шума */
+  background: url("noise.png"); /* 🔥 шум */
   opacity: 0.05;
   pointer-events: none;
 }
 
-/* ОСНОВНАЯ РАМКА */
+/* ОСНОВНОЙ БЛОК */
 #game {
-  width: 90%;
+  width: 100%;
   max-width: 420px;
-  margin: auto;
-  margin-top: 20px;
+  height: 90vh;
 
-  /* 🔥 РАМКА КАК В ИГРЕ */
   border: 4px solid #6f7f5f;
+  background: rgba(0,0,0,0.7);
+
+  display: flex;
+  flex-direction: column;
   padding: 20px;
-  background: rgba(0,0,0,0.6);
+  gap: 20px;
 }
 
 /* ВЕРХ */
@@ -57,33 +64,38 @@ body::after {
 
 .label {
   font-size: 10px;
+  opacity: 0.7;
 }
 
 .value {
-  font-size: 20px;
-  margin-top: 10px;
+  font-size: 22px;
+  margin-top: 8px;
 }
 
 /* ПРОГРЕСС */
 .progress {
   border: 2px solid #6f7f5f;
-  height: 20px;
-  margin: 20px 0;
-  position: relative;
+  height: 18px;
+  width: 100%;
 }
 
 .progress-fill {
-  background: #b7c9a9;
   height: 100%;
   width: 0%;
+  background: #b7c9a9;
 }
 
-/* 🔥 КНОПКА (ВАЖНО) */
+/* ЦЕНТР (КНОПКА) */
+.center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #clicker {
   width: 220px;
   height: 220px;
-  margin: 30px auto;
-  cursor: pointer;
 
   display: flex;
   justify-content: center;
@@ -92,11 +104,12 @@ body::after {
   text-align: center;
   color: black;
 
+  cursor: pointer;
+
   /* 🔥 ВСТАВЬ СВОЮ КНОПКУ */
   background: url("button.png") center/cover no-repeat;
 }
 
-/* эффект нажатия */
 #clicker:active {
   transform: scale(0.95);
 }
@@ -104,30 +117,27 @@ body::after {
 /* НИЖНЕЕ МЕНЮ */
 .bottom-menu {
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
 }
 
 .menu-btn {
-  width: 30%;
+  flex: 1;
   text-align: center;
-  padding: 10px;
-
   border: 2px solid #6f7f5f;
+  padding: 10px;
 }
 
-/* 🔥 ИКОНКИ */
 .menu-btn img {
   width: 24px;
-  display: block;
-  margin: 0 auto 10px;
+  margin-bottom: 8px;
 }
 
 /* +1 */
 .plus {
   position: absolute;
+  font-size: 14px;
   color: #b7c9a9;
-  font-size: 16px;
-  animation: floatUp 0.6s ease-out forwards;
+  animation: floatUp 0.6s forwards;
 }
 
 @keyframes floatUp {
@@ -159,17 +169,18 @@ body::after {
     <div class="progress-fill" id="progress"></div>
   </div>
 
-  <!-- КНОПКА -->
-  <div id="clicker">
-    CLICK<br>ME
+  <!-- ЦЕНТР -->
+  <div class="center">
+    <div id="clicker">
+      CLICK<br>ME
+    </div>
   </div>
 
-  <!-- НИЖНЕЕ МЕНЮ -->
+  <!-- НИЗ -->
   <div class="bottom-menu">
 
     <div class="menu-btn">
-      <!-- 🔥 ИКОНКА -->
-      <img src="upgrade.png">
+      <img src="upgrade.png"> <!-- 🔥 ИКОНКА -->
       UPGRADES
     </div>
 
@@ -211,8 +222,10 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
-/* 🔥 ТАП (быстро для Telegram) */
+/* БЫСТРЫЙ ТАП (для Telegram) */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
+  e.preventDefault();
+
   score++;
   scoreEl.innerText = score;
 
