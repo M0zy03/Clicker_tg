@@ -26,22 +26,21 @@ body {
   font-family: 'Press Start 2P', monospace;
   color: #b7c9a9;
 
-  /* 🔥 ФОН */
   background: url("bg_main.png") center/cover no-repeat;
 }
 
-/* ШУМ */
+/* шум */
 body::after {
   content: "";
   position: fixed;
   width: 100%;
   height: 100%;
-  background: url("noise.png"); /* 🔥 шум */
+  background: url("noise.png");
   opacity: 0.05;
   pointer-events: none;
 }
 
-/* ОСНОВА */
+/* основной блок */
 #game {
   width: 100%;
   max-width: 420px;
@@ -56,7 +55,7 @@ body::after {
   gap: 20px;
 }
 
-/* ВЕРХ */
+/* верх */
 .top-bar {
   display: flex;
   justify-content: space-between;
@@ -72,11 +71,10 @@ body::after {
   margin-top: 8px;
 }
 
-/* ПРОГРЕСС */
+/* прогресс */
 .progress {
   border: 2px solid #6f7f5f;
   height: 18px;
-  width: 100%;
 }
 
 .progress-fill {
@@ -85,7 +83,7 @@ body::after {
   background: #b7c9a9;
 }
 
-/* ЦЕНТР */
+/* центр */
 .center {
   flex: 1;
   display: flex;
@@ -94,37 +92,30 @@ body::after {
 }
 
 #clicker {
-  width: 440px;
-  height: 440px;
-
+  width: 220px;
+  height: 220px;
   display: flex;
   justify-content: center;
   align-items: center;
-
   cursor: pointer;
 }
 
-/* ✅ ПРАВИЛЬНОЕ ОТОБРАЖЕНИЕ МОНЕТЫ */
+/* монета */
 #coin {
   max-width: 100%;
   max-height: 100%;
-
   width: auto;
   height: auto;
-
   object-fit: contain;
 
-  user-select: none;
-  -webkit-user-drag: none;
   pointer-events: none;
 }
 
-/* эффект нажатия */
 #clicker:active #coin {
   transform: scale(0.9);
 }
 
-/* НИЖНЕЕ МЕНЮ */
+/* 🔥 НИЖНИЕ КНОПКИ (исправлено) */
 .bottom-menu {
   display: flex;
   gap: 10px;
@@ -132,18 +123,22 @@ body::after {
 
 .menu-btn {
   flex: 1;
+  height: 70px; /* фикс высота */
+  
+  border: 2px solid #6f7f5f;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
-  border: 2px solid #6f7f5f;
-  padding: 15px 0;
+  overflow: hidden; /* чтобы ничего не вылазило */
 }
 
-/* 🔥 ИКОНКИ */
+/* 🔥 ИКОНКИ (теперь можно увеличивать) */
 .menu-btn img {
-  width: 112px;
-  height: 112px;
+  max-width: 70%;
+  max-height: 70%;
+  object-fit: contain;
 }
 
 /* +1 */
@@ -165,7 +160,6 @@ body::after {
 
 <div id="game">
 
-  <!-- ВЕРХ -->
   <div class="top-bar">
     <div>
       <div class="label">SCORE</div>
@@ -178,34 +172,27 @@ body::after {
     </div>
   </div>
 
-  <!-- ПРОГРЕСС -->
   <div class="progress">
     <div class="progress-fill" id="progress"></div>
   </div>
 
-  <!-- ЦЕНТР -->
   <div class="center">
     <div id="clicker">
-      <!-- 🔥 ВСТАВЬ СЮДА МОНЕТКУ -->
-      <img src="button.png" id="coin">
+      <img src="coin.png" id="coin"> <!-- МОНЕТКА -->
     </div>
   </div>
 
-  <!-- НИЗ -->
   <div class="bottom-menu">
 
     <div class="menu-btn">
-      <!-- 🔥 ИКОНКА 1 -->
-      <img src="upgrade.png">
+      <img src="upgrade.png"> <!-- ИКОНКА -->
     </div>
 
     <div class="menu-btn">
-      <!-- 🔥 ИКОНКА 2 -->
       <img src="stats.png">
     </div>
 
     <div class="menu-btn">
-      <!-- 🔥 ИКОНКА 3 -->
       <img src="trophy.png">
     </div>
 
@@ -237,7 +224,6 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
-/* ТАП */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
