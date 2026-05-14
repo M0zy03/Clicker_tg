@@ -26,16 +26,10 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 ПЛАВНЫЕ ПИКСЕЛЬНЫЕ УГЛЫ (как на скрине) */
-.pixel {
-  border: 3px solid #7f8f6f;
-
-  /* 👇 МЕНЯЙ 10px → больше = мягче углы */
-  clip-path: polygon(
-    0% 100px, 100px 0%, calc(100% - 100px) 0%, 100% 100px,
-    100% calc(100% - 100px), calc(100% - 100px) 100%,
-    100px 100%, 0% calc(100% - 100px)
-  );
+/* 🔥 НОРМАЛЬНЫЕ СКРУГЛЕНИЯ */
+.box {
+  border: 2px solid #7f8f6f;
+  border-radius: 14px; /* 👈 меняй тут плавность */
 }
 
 /* ОСНОВА */
@@ -85,6 +79,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
+
   background: url("bg_main.png") center/cover no-repeat;
 }
 
@@ -99,13 +94,8 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
-
-  /* такие же углы */
-  clip-path: polygon(
-    0% 6px, 6px 0%, calc(100% - 6px) 0%, 100% 6px,
-    100% calc(100% - 6px), calc(100% - 6px) 100%,
-    6px 100%, 0% calc(100% - 6px)
-  );
+  border-radius: 8px; /* 👈 отдельное скругление */
+  overflow: hidden;
 }
 
 .progress-fill {
@@ -126,7 +116,7 @@ body {
   align-items: center;
 }
 
-/* КЛИКЕР */
+/* КНОПКА */
 #clicker {
   width: 220px;
   height: 220px;
@@ -136,10 +126,10 @@ body {
   cursor: pointer;
 }
 
-/* 🔥 МОНЕТА */
-/* 👉 МЕНЯЙ ЗДЕСЬ РАЗМЕР МОНЕТЫ */
+/* 🪙 МОНЕТА */
+/* 👉 МЕНЯЙ РАЗМЕР ЗДЕСЬ */
 #coin {
-  width: 130%; /* 👈 ТВОЙ РАЗМЕР (меняешь тут) */
+  width: 130%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -176,18 +166,17 @@ body {
   overflow: hidden;
 }
 
-/* 🔥 КНОПКИ СНИЗУ */
-/* 👉 МЕНЯЙ ЗДЕСЬ РАЗМЕР ИКОНОК */
+/* 🔘 КНОПКИ */
+/* 👉 МЕНЯЙ РАЗМЕР ЗДЕСЬ */
 .menu-btn img {
-  width: 70%; /* 👈 ТВОЙ РАЗМЕР (меняешь тут) */
-  object-fit: contain;
+  width: 70%;
 }
 </style>
 </head>
 
 <body>
 
-<div id="app" class="pixel">
+<div id="app">
 
   <!-- ВЕРХ -->
   <div class="top">
@@ -202,14 +191,14 @@ body {
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings pixel">
+    <div class="settings box">
       <img src="settings.png">
     </div>
 
   </div>
 
   <!-- ЭКРАН -->
-  <div class="screen pixel">
+  <div class="screen box">
 
     <div class="label">NEXT BACKGROUND</div>
 
@@ -231,15 +220,15 @@ body {
   <!-- НИЗ -->
   <div class="bottom">
 
-    <div class="menu-btn pixel">
+    <div class="menu-btn box">
       <img src="upgrade.png">
     </div>
 
-    <div class="menu-btn pixel">
+    <div class="menu-btn box">
       <img src="stats.png">
     </div>
 
-    <div class="menu-btn pixel">
+    <div class="menu-btn box">
       <img src="trophy.png">
     </div>
 
