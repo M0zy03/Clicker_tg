@@ -26,13 +26,15 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 УНИВЕРСАЛЬНЫЙ ПИКСЕЛЬНЫЙ БЛОК */
+/* 🔥 ПЛАВНЫЕ ПИКСЕЛЬНЫЕ УГЛЫ (как на скрине) */
 .pixel {
   border: 3px solid #7f8f6f;
+
+  /* 👇 МЕНЯЙ 10px → больше = мягче углы */
   clip-path: polygon(
-    0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px,
-    100% calc(100% - 8px), calc(100% - 8px) 100%,
-    8px 100%, 0% calc(100% - 8px)
+    0% 10px, 10px 0%, calc(100% - 10px) 0%, 100% 10px,
+    100% calc(100% - 10px), calc(100% - 10px) 100%,
+    10px 100%, 0% calc(100% - 10px)
   );
 }
 
@@ -97,6 +99,8 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
+
+  /* такие же углы */
   clip-path: polygon(
     0% 6px, 6px 0%, calc(100% - 6px) 0%, 100% 6px,
     100% calc(100% - 6px), calc(100% - 6px) 100%,
@@ -122,7 +126,7 @@ body {
   align-items: center;
 }
 
-/* КНОПКА */
+/* КЛИКЕР */
 #clicker {
   width: 220px;
   height: 220px;
@@ -132,9 +136,12 @@ body {
   cursor: pointer;
 }
 
+/* 🔥 МОНЕТА */
+/* 👉 МЕНЯЙ ЗДЕСЬ РАЗМЕР МОНЕТЫ */
 #coin {
-  width: 130%;
+  width: 130%; /* 👈 ТВОЙ РАЗМЕР (меняешь тут) */
   object-fit: contain;
+  pointer-events: none;
 }
 
 #clicker:active #coin {
@@ -169,8 +176,11 @@ body {
   overflow: hidden;
 }
 
+/* 🔥 КНОПКИ СНИЗУ */
+/* 👉 МЕНЯЙ ЗДЕСЬ РАЗМЕР ИКОНОК */
 .menu-btn img {
-  width: 70%;
+  width: 70%; /* 👈 ТВОЙ РАЗМЕР (меняешь тут) */
+  object-fit: contain;
 }
 </style>
 </head>
