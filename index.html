@@ -47,6 +47,7 @@ body::after {
   height: 90vh;
 
   border: 4px solid #6f7f5f;
+  border-radius: 16px; /* 🔥 скругление */
   background: rgba(0,0,0,0.7);
 
   display: flex;
@@ -71,16 +72,31 @@ body::after {
   margin-top: 8px;
 }
 
-/* прогресс */
+/* 🔥 ПРОГРЕСС + ТЕКСТ */
+.progress-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .progress {
+  flex: 1;
   border: 2px solid #6f7f5f;
+  border-radius: 10px; /* 🔥 скругление */
   height: 18px;
+  overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   width: 0%;
   background: #b7c9a9;
+}
+
+.progress-text {
+  font-size: 10px;
+  min-width: 60px;
+  text-align: right;
 }
 
 /* центр */
@@ -102,12 +118,9 @@ body::after {
 
 /* монета */
 #coin {
-  max-width: 175%;
-  max-height: 175%;
-  width: auto;
-  height: auto;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-
   pointer-events: none;
 }
 
@@ -115,7 +128,7 @@ body::after {
   transform: scale(0.9);
 }
 
-/* 🔥 НИЖНИЕ КНОПКИ (исправлено) */
+/* низ */
 .bottom-menu {
   display: flex;
   gap: 10px;
@@ -123,21 +136,21 @@ body::after {
 
 .menu-btn {
   flex: 1;
-  height: 70px; /* фикс высота */
-  
+  height: 70px;
+
   border: 2px solid #6f7f5f;
+  border-radius: 12px; /* 🔥 скругление */
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  overflow: hidden; /* чтобы ничего не вылазило */
+  overflow: hidden;
 }
 
-/* 🔥 ИКОНКИ (теперь можно увеличивать) */
 .menu-btn img {
-  max-width: 170%;
-  max-height: 170%;
+  max-width: 70%;
+  max-height: 70%;
   object-fit: contain;
 }
 
@@ -172,20 +185,24 @@ body::after {
     </div>
   </div>
 
-  <div class="progress">
-    <div class="progress-fill" id="progress"></div>
+  <!-- 🔥 ПРОГРЕСС -->
+  <div class="progress-wrapper">
+    <div class="progress">
+      <div class="progress-fill" id="progress"></div>
+    </div>
+    <div class="progress-text" id="progressText">0 / 100</div>
   </div>
 
   <div class="center">
     <div id="clicker">
-      <img src="button.png" id="coin"> <!-- МОНЕТКА -->
+      <img src="button.png" id="coin">
     </div>
   </div>
 
   <div class="bottom-menu">
 
     <div class="menu-btn">
-      <img src="upgrade.png"> <!-- ИКОНКА -->
+      <img src="upgrade.png">
     </div>
 
     <div class="menu-btn">
@@ -206,10 +223,13 @@ let best = 0;
 
 const scoreEl = document.getElementById("score");
 const bestEl = document.getElementById("best");
+const progressText = document.getElementById("progressText");
 
 function updateProgress() {
   let progress = score % 100;
+
   document.getElementById("progress").style.width = progress + "%";
+  progressText.innerText = progress + " / 100";
 }
 
 function createPlus(x, y) {
