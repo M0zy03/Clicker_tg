@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -26,16 +27,11 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 НОРМАЛЬНЫЕ СКРУГЛЕНИЯ */
-.box {
-  border: 2px solid #7f8f6f;
-  border-radius: 14px; /* 👈 меняй тут плавность */
-}
-
-/* ОСНОВА */
+/* ОСНОВНАЯ РАМКА */
 #app {
   width: 420px;
   height: 90vh;
+  border: 3px solid #7f8f6f;
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -47,6 +43,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.score-block {
+  text-align: left;
+}
+
+.best-block {
+  text-align: center;
 }
 
 .label {
@@ -63,6 +67,7 @@ body {
 .settings {
   width: 45px;
   height: 45px;
+  border: 2px solid #7f8f6f;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,15 +77,22 @@ body {
   width: 24px;
 }
 
-/* ЭКРАН */
+/* 🔥 ВНУТРЕННИЙ ЭКРАН */
 .screen {
   flex: 1;
+  border: 3px solid #7f8f6f;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
 
+  /* 🔥 ФОН */
   background: url("bg_main.png") center/cover no-repeat;
+}
+
+/* NEXT BACKGROUND */
+.next-label {
+  font-size: 10px;
 }
 
 /* ПРОГРЕСС */
@@ -94,8 +106,6 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
-  border-radius: 8px; /* 👈 отдельное скругление */
-  overflow: hidden;
 }
 
 .progress-fill {
@@ -108,7 +118,7 @@ body {
   font-size: 12px;
 }
 
-/* ЦЕНТР */
+/* КНОПКА */
 .center {
   flex: 1;
   display: flex;
@@ -116,7 +126,6 @@ body {
   align-items: center;
 }
 
-/* КНОПКА */
 #clicker {
   width: 220px;
   height: 220px;
@@ -126,12 +135,10 @@ body {
   cursor: pointer;
 }
 
-/* 🪙 МОНЕТА */
-/* 👉 МЕНЯЙ РАЗМЕР ЗДЕСЬ */
 #coin {
-  width: 130%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
-  pointer-events: none;
 }
 
 #clicker:active #coin {
@@ -159,17 +166,22 @@ body {
 
 .menu-btn {
   flex: 1;
+  border: 2px solid #7f8f6f;
   height: 70px;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  gap: 8px;
 }
 
-/* 🔘 КНОПКИ */
-/* 👉 МЕНЯЙ РАЗМЕР ЗДЕСЬ */
 .menu-btn img {
-  width: 70%;
+  width: 26px;
+}
+
+.menu-btn span {
+  font-size: 9px;
 }
 </style>
 </head>
@@ -181,26 +193,26 @@ body {
   <!-- ВЕРХ -->
   <div class="top">
 
-    <div>
+    <div class="score-block">
       <div class="label">SCORE</div>
       <div class="value" id="score">0</div>
     </div>
 
-    <div style="text-align:center;">
+    <div class="best-block">
       <div class="label">BEST</div>
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings box">
+    <div class="settings">
       <img src="settings.png">
     </div>
 
   </div>
 
   <!-- ЭКРАН -->
-  <div class="screen box">
+  <div class="screen">
 
-    <div class="label">NEXT BACKGROUND</div>
+    <div class="next-label">NEXT BACKGROUND</div>
 
     <div class="progress-row">
       <div class="progress">
@@ -220,16 +232,19 @@ body {
   <!-- НИЗ -->
   <div class="bottom">
 
-    <div class="menu-btn box">
+    <div class="menu-btn">
       <img src="upgrade.png">
+      <span>UPGRADES</span>
     </div>
 
-    <div class="menu-btn box">
+    <div class="menu-btn">
       <img src="stats.png">
+      <span>STATS</span>
     </div>
 
-    <div class="menu-btn box">
+    <div class="menu-btn">
       <img src="trophy.png">
+      <span>ACHIEVE</span>
     </div>
 
   </div>
