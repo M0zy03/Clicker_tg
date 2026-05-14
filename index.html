@@ -18,85 +18,85 @@
 }
 
 body {
+  background: #000;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-family: 'Press Start 2P', monospace;
   color: #b7c9a9;
-
-  background: url("bg_main.png") center/cover no-repeat;
 }
 
-/* шум */
-body::after {
-  content: "";
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: url("noise.png");
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-/* основной блок */
-#game {
-  width: 100%;
-  max-width: 420px;
+/* ОСНОВНАЯ РАМКА */
+#app {
+  width: 420px;
   height: 90vh;
-
-  border: 4px solid #6f7f5f;
-  border-radius: 16px;
-  background: rgba(0,0,0,0.7);
-
+  border: 3px solid #7f8f6f;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  gap: 20px;
-  position: relative;
+  gap: 15px;
 }
 
-/* 🔥 BEST ПО ЦЕНТРУ */
-.best-center {
+/* ВЕРХ */
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.score-block {
+  text-align: left;
+}
+
+.best-block {
   text-align: center;
 }
 
-.best-center .label {
+.label {
   font-size: 10px;
   opacity: 0.7;
 }
 
-.best-center .value {
+.value {
   font-size: 22px;
   margin-top: 5px;
 }
 
-/* ⚙️ настройки */
+/* ⚙️ */
 .settings {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-
-  width: 40px;
-  height: 40px;
-
-  border: 2px solid #6f7f5f;
-  border-radius: 10px;
-
+  width: 45px;
+  height: 45px;
+  border: 2px solid #7f8f6f;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* 🔥 сюда вставишь шестерёнку */
 .settings img {
   width: 24px;
-  height: 24px;
 }
 
-/* прогресс */
-.progress-wrapper {
+/* 🔥 ВНУТРЕННИЙ ЭКРАН */
+.screen {
+  flex: 1;
+  border: 3px solid #7f8f6f;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  /* 🔥 ФОН */
+  background: url("bg_main.png") center/cover no-repeat;
+}
+
+/* NEXT BACKGROUND */
+.next-label {
+  font-size: 10px;
+}
+
+/* ПРОГРЕСС */
+.progress-row {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -104,10 +104,8 @@ body::after {
 
 .progress {
   flex: 1;
-  border: 2px solid #6f7f5f;
-  border-radius: 10px;
-  height: 18px;
-  overflow: hidden;
+  height: 14px;
+  border: 2px solid #7f8f6f;
 }
 
 .progress-fill {
@@ -116,14 +114,11 @@ body::after {
   background: #b7c9a9;
 }
 
-/* 🔥 УВЕЛИЧЕННЫЙ СЧЁТ */
 .progress-text {
-  font-size: 16px; /* увеличили */
-  min-width: 80px;
-  text-align: right;
+  font-size: 12px;
 }
 
-/* центр */
+/* КНОПКА */
 .center {
   flex: 1;
   display: flex;
@@ -140,41 +135,14 @@ body::after {
   cursor: pointer;
 }
 
-/* монета */
 #coin {
   max-width: 185%;
   max-height: 185%;
   object-fit: contain;
-  pointer-events: none;
 }
 
 #clicker:active #coin {
-  transform: scale(0.9);
-}
-
-/* низ */
-.bottom-menu {
-  display: flex;
-  gap: 10px;
-}
-
-.menu-btn {
-  flex: 1;
-  height: 70px;
-
-  border: 2px solid #6f7f5f;
-  border-radius: 12px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  overflow: hidden;
-}
-
-.menu-btn img {
-  max-width: 170%;
-  max-height: 170%;
+  transform: scale(0.92);
 }
 
 /* +1 */
@@ -189,52 +157,94 @@ body::after {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-40px); }
 }
+
+/* НИЗ */
+.bottom {
+  display: flex;
+  gap: 10px;
+}
+
+.menu-btn {
+  flex: 1;
+  border: 2px solid #7f8f6f;
+  height: 70px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-btn img {
+  width: 26px;
+}
+
+.menu-btn span {
+  font-size: 9px;
+}
 </style>
 </head>
 
 <body>
 
-<div id="game">
+<div id="app">
 
-  <!-- ⚙️ настройки -->
-  <div class="settings">
-    <img src="settings.png"> <!-- 🔥 сюда шестерёнку -->
-  </div>
+  <!-- ВЕРХ -->
+  <div class="top">
 
-  <!-- BEST -->
-  <div class="best-center">
-    <div class="label">BEST</div>
-    <div class="value" id="best">0</div>
-  </div>
-
-  <!-- ПРОГРЕСС -->
-  <div class="progress-wrapper">
-    <div class="progress">
-      <div class="progress-fill" id="progress"></div>
+    <div class="score-block">
+      <div class="label">SCORE</div>
+      <div class="value" id="score">0</div>
     </div>
-    <div class="progress-text" id="progressText">0 / 100</div>
-  </div>
 
-  <!-- центр -->
-  <div class="center">
-    <div id="clicker">
-      <img src="button.png" id="coin">
+    <div class="best-block">
+      <div class="label">BEST</div>
+      <div class="value" id="best">0</div>
     </div>
+
+    <div class="settings">
+      <img src="settings.png">
+    </div>
+
   </div>
 
-  <!-- низ -->
-  <div class="bottom-menu">
+  <!-- ЭКРАН -->
+  <div class="screen">
+
+    <div class="next-label">NEXT BACKGROUND</div>
+
+    <div class="progress-row">
+      <div class="progress">
+        <div class="progress-fill" id="progress"></div>
+      </div>
+      <div class="progress-text" id="progressText">0 / 100</div>
+    </div>
+
+    <div class="center">
+      <div id="clicker">
+        <img src="button.png" id="coin">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- НИЗ -->
+  <div class="bottom">
 
     <div class="menu-btn">
       <img src="upgrade.png">
+      <span>UPGRADES</span>
     </div>
 
     <div class="menu-btn">
       <img src="stats.png">
+      <span>STATS</span>
     </div>
 
     <div class="menu-btn">
       <img src="trophy.png">
+      <span>ACHIEVE</span>
     </div>
 
   </div>
@@ -245,12 +255,12 @@ body::after {
 let score = 0;
 let best = 0;
 
+const scoreEl = document.getElementById("score");
 const bestEl = document.getElementById("best");
 const progressText = document.getElementById("progressText");
 
 function updateProgress() {
   let progress = score % 100;
-
   document.getElementById("progress").style.width = progress + "%";
   progressText.innerText = progress + " / 100";
 }
@@ -271,6 +281,7 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
   score++;
+  scoreEl.innerText = score;
 
   if (score > best) {
     best = score;
