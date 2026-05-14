@@ -26,26 +26,14 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 ПИКСЕЛЬНЫЕ УГЛЫ */
-.pixel-box {
-  position: relative;
+/* 🔥 УНИВЕРСАЛЬНЫЙ ПИКСЕЛЬНЫЙ БЛОК */
+.pixel {
   border: 3px solid #7f8f6f;
-}
-
-.pixel-box::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  pointer-events: none;
-
-  /* делаем ступенчатые углы */
   clip-path: polygon(
     0% 8px, 8px 0%, calc(100% - 8px) 0%, 100% 8px,
     100% calc(100% - 8px), calc(100% - 8px) 100%,
     8px 100%, 0% calc(100% - 8px)
   );
-
-  border: 3px solid #7f8f6f;
 }
 
 /* ОСНОВА */
@@ -64,9 +52,6 @@ body {
   justify-content: space-between;
   align-items: center;
 }
-
-.score-block { text-align: left; }
-.best-block { text-align: center; }
 
 .label {
   font-size: 10px;
@@ -91,20 +76,14 @@ body {
   width: 24px;
 }
 
-/* 🔥 ВНУТРЕННИЙ ЭКРАН */
+/* ЭКРАН */
 .screen {
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-
   background: url("bg_main.png") center/cover no-repeat;
-}
-
-/* NEXT */
-.next-label {
-  font-size: 10px;
 }
 
 /* ПРОГРЕСС */
@@ -118,6 +97,11 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
+  clip-path: polygon(
+    0% 6px, 6px 0%, calc(100% - 6px) 0%, 100% 6px,
+    100% calc(100% - 6px), calc(100% - 6px) 100%,
+    6px 100%, 0% calc(100% - 6px)
+  );
 }
 
 .progress-fill {
@@ -138,7 +122,7 @@ body {
   align-items: center;
 }
 
-/* 🔥 КЛИКЕР */
+/* КНОПКА */
 #clicker {
   width: 220px;
   height: 220px;
@@ -148,15 +132,11 @@ body {
   cursor: pointer;
 }
 
-/* 🔥 МОНЕТА 185% */
 #coin {
   width: 130%;
-  height: auto;
   object-fit: contain;
-  pointer-events: none;
 }
 
-/* эффект */
 #clicker:active #coin {
   transform: scale(0.92);
 }
@@ -189,42 +169,39 @@ body {
   overflow: hidden;
 }
 
-/* 🔥 ИКОНКИ 170% */
 .menu-btn img {
   width: 70%;
-  height: auto;
-  object-fit: contain;
 }
 </style>
 </head>
 
 <body>
 
-<div id="app" class="pixel-box">
+<div id="app" class="pixel">
 
   <!-- ВЕРХ -->
   <div class="top">
 
-    <div class="score-block">
+    <div>
       <div class="label">SCORE</div>
       <div class="value" id="score">0</div>
     </div>
 
-    <div class="best-block">
+    <div style="text-align:center;">
       <div class="label">BEST</div>
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings pixel-box">
+    <div class="settings pixel">
       <img src="settings.png">
     </div>
 
   </div>
 
   <!-- ЭКРАН -->
-  <div class="screen pixel-box">
+  <div class="screen pixel">
 
-    <div class="next-label">NEXT BACKGROUND</div>
+    <div class="label">NEXT BACKGROUND</div>
 
     <div class="progress-row">
       <div class="progress">
@@ -244,15 +221,15 @@ body {
   <!-- НИЗ -->
   <div class="bottom">
 
-    <div class="menu-btn pixel-box">
+    <div class="menu-btn pixel">
       <img src="upgrade.png">
     </div>
 
-    <div class="menu-btn pixel-box">
+    <div class="menu-btn pixel">
       <img src="stats.png">
     </div>
 
-    <div class="menu-btn pixel-box">
+    <div class="menu-btn pixel">
       <img src="trophy.png">
     </div>
 
