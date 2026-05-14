@@ -26,25 +26,29 @@ body {
   font-family: 'Press Start 2P', monospace;
   color: #b7c9a9;
 
-  background: #000; /* 🔥 СНАРУЖИ ЧЁРНЫЙ */
+  background: url("bg_main.png") center/cover no-repeat;
 }
 
-/* 🔥 ВНЕШНЯЯ РАМКА */
-#outer {
-  border: 4px solid #6f7f5f;
-  padding: 6px;
+/* шум */
+body::after {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url("noise.png");
+  opacity: 0.05;
+  pointer-events: none;
 }
 
-/* 🔥 ВНУТРЕННЯЯ РАМКА */
+/* основной блок */
 #game {
   width: 100%;
   max-width: 420px;
   height: 90vh;
 
   border: 4px solid #6f7f5f;
-
-  /* 🔥 ФОН ТОЛЬКО ВНУТРИ */
-  background: url("bg_main.png") center/cover no-repeat;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.7);
 
   display: flex;
   flex-direction: column;
@@ -53,26 +57,17 @@ body {
   position: relative;
 }
 
-/* пиксельные “скругления” */
-#outer, #game {
-  clip-path: polygon(
-    0% 6px, 6px 0%, calc(100% - 6px) 0%, 100% 6px,
-    100% calc(100% - 6px), calc(100% - 6px) 100%,
-    6px 100%, 0% calc(100% - 6px)
-  );
-}
-
-/* BEST */
+/* 🔥 BEST ПО ЦЕНТРУ */
 .best-center {
   text-align: center;
 }
 
-.label {
+.best-center .label {
   font-size: 10px;
   opacity: 0.7;
 }
 
-.value {
+.best-center .value {
   font-size: 22px;
   margin-top: 5px;
 }
@@ -80,21 +75,24 @@ body {
 /* ⚙️ настройки */
 .settings {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
 
   width: 40px;
   height: 40px;
 
   border: 2px solid #6f7f5f;
+  border-radius: 10px;
 
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* 🔥 сюда вставишь шестерёнку */
 .settings img {
   width: 24px;
+  height: 24px;
 }
 
 /* прогресс */
@@ -107,6 +105,7 @@ body {
 .progress {
   flex: 1;
   border: 2px solid #6f7f5f;
+  border-radius: 10px;
   height: 18px;
   overflow: hidden;
 }
@@ -117,8 +116,9 @@ body {
   background: #b7c9a9;
 }
 
+/* 🔥 УВЕЛИЧЕННЫЙ СЧЁТ */
 .progress-text {
-  font-size: 16px;
+  font-size: 16px; /* увеличили */
   min-width: 80px;
   text-align: right;
 }
@@ -163,6 +163,7 @@ body {
   height: 70px;
 
   border: 2px solid #6f7f5f;
+  border-radius: 12px;
 
   display: flex;
   justify-content: center;
@@ -193,13 +194,11 @@ body {
 
 <body>
 
-<div id="outer"> <!-- 🔥 ВНЕШНЯЯ РАМКА -->
-
 <div id="game">
 
   <!-- ⚙️ настройки -->
   <div class="settings">
-    <img src="settings.png">
+    <img src="settings.png"> <!-- 🔥 сюда шестерёнку -->
   </div>
 
   <!-- BEST -->
@@ -208,7 +207,7 @@ body {
     <div class="value" id="best">0</div>
   </div>
 
-  <!-- прогресс -->
+  <!-- ПРОГРЕСС -->
   <div class="progress-wrapper">
     <div class="progress">
       <div class="progress-fill" id="progress"></div>
@@ -219,7 +218,7 @@ body {
   <!-- центр -->
   <div class="center">
     <div id="clicker">
-      <img src="button.png" id="coin"> <!-- МОНЕТКА -->
+      <img src="button.png" id="coin">
     </div>
   </div>
 
@@ -240,7 +239,6 @@ body {
 
   </div>
 
-</div>
 </div>
 
 <script>
