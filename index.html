@@ -254,7 +254,7 @@ input[type=range]::-webkit-slider-thumb{
       <div class="switch" id="autoToggle"></div>
     </div>
 
-    <div id="upgradeInfo"></div>
+    <div id="upgradeInfo" style="font-size:10px; opacity:0.6;"></div>
 
     <div id="buyUpgrade" style="cursor:pointer;text-align:center;">BUY</div>
     <div id="closeUpgrade" style="cursor:pointer;text-align:center;">CLOSE</div>
@@ -323,11 +323,11 @@ function updateUI(){
 
 function updateUpgradeInfo(){
   if(autoLevel>=levels.length){
-    upgradeInfo.innerText="MAX LEVEL";
+    upgradeInfo.innerHTML="MAX LEVEL";
     return;
   }
   let n=levels[autoLevel];
-  upgradeInfo.innerText="PRICE: "+n.price+" | CPS: "+n.cps;
+  upgradeInfo.innerHTML=`PRICE: ${n.price} | CPS: ${n.cps}`;
 }
 
 /* ПОКУПКА */
@@ -352,10 +352,11 @@ autoToggle.onclick=(e)=>{
 };
 
 /* ГРОМКОСТЬ */
-volumeSlider.oninput=(e)=>{
+volumeSlider.addEventListener("input",(e)=>{
   volume=parseFloat(e.target.value);
   volumeFill.style.width=(volume*100)+"%";
-};
+  clickSound.volume=volume;
+});
 
 /* МОДАЛКИ */
 openSettings.onclick=()=>settingsModal.classList.add("active");
