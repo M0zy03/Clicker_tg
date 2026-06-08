@@ -26,45 +26,79 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 ПИКСЕЛЬНЫЕ УГЛЫ 1 В 1 */
+/* ПИКСЕЛЬНОЕ СКРУГЛЕНИЕ УГЛОВ */
 .box {
+  --border: 2px;
+  --step: 5px;
+  --corner: 15px;
+  --line: #7f8f6f;
+
   position: relative;
-  border: 2px solid #7f8f6f;
+  border: none;
+  clip-path: polygon(
+    0 var(--corner),
+    var(--step) var(--corner),
+    var(--step) calc(var(--corner) - var(--step)),
+    calc(var(--corner) - var(--step)) calc(var(--corner) - var(--step)),
+    calc(var(--corner) - var(--step)) var(--step),
+    var(--corner) var(--step),
+    var(--corner) 0,
+
+    calc(100% - var(--corner)) 0,
+    calc(100% - var(--corner)) var(--step),
+    calc(100% - var(--corner) + var(--step)) var(--step),
+    calc(100% - var(--corner) + var(--step)) calc(var(--corner) - var(--step)),
+    calc(100% - var(--step)) calc(var(--corner) - var(--step)),
+    calc(100% - var(--step)) var(--corner),
+    100% var(--corner),
+
+    100% calc(100% - var(--corner)),
+    calc(100% - var(--step)) calc(100% - var(--corner)),
+    calc(100% - var(--step)) calc(100% - var(--corner) + var(--step)),
+    calc(100% - var(--corner) + var(--step)) calc(100% - var(--corner) + var(--step)),
+    calc(100% - var(--corner) + var(--step)) calc(100% - var(--step)),
+    calc(100% - var(--corner)) calc(100% - var(--step)),
+    calc(100% - var(--corner)) 100%,
+
+    var(--corner) 100%,
+    var(--corner) calc(100% - var(--step)),
+    calc(var(--corner) - var(--step)) calc(100% - var(--step)),
+    calc(var(--corner) - var(--step)) calc(100% - var(--corner) + var(--step)),
+    var(--step) calc(100% - var(--corner) + var(--step)),
+    var(--step) calc(100% - var(--corner)),
+    0 calc(100% - var(--corner))
+  );
 }
 
-/* делаем "ступеньки" */
 .box::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 2;
   pointer-events: none;
+  background: var(--line);
+  clip-path: inherit;
+  padding: var(--border);
 
-  box-shadow:
-    /* верх левый угол */
-    -2px 2px 0 #000,
-    -4px 4px 0 #000,
-
-    /* верх правый */
-    calc(100% + 2px) 2px 0 #000,
-    calc(100% + 4px) 4px 0 #000,
-
-    /* низ левый */
-    -2px calc(100% - 2px) 0 #000,
-    -4px calc(100% - 4px) 0 #000,
-
-    /* низ правый */
-    calc(100% + 2px) calc(100% - 2px) 0 #000,
-    calc(100% + 4px) calc(100% - 4px) 0 #000;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 /* ОСНОВА */
 #app {
+  --step: 5px;
+  --corner: 18px;
+
   width: 420px;
   height: 90vh;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+  background: #000;
 }
 
 /* ВЕРХ */
@@ -84,8 +118,11 @@ body {
   margin-top: 5px;
 }
 
-/* ⚙️ */
+/* НАСТРОЙКИ */
 .settings {
+  --step: 4px;
+  --corner: 12px;
+
   width: 45px;
   height: 45px;
   display: flex;
@@ -99,6 +136,9 @@ body {
 
 /* ЭКРАН */
 .screen {
+  --step: 5px;
+  --corner: 16px;
+
   flex: 1;
   padding: 15px;
   display: flex;
@@ -149,7 +189,7 @@ body {
   cursor: pointer;
 }
 
-/* 🪙 МОНЕТА */
+/* МОНЕТА */
 #coin {
   width: 130%;
   object-fit: contain;
@@ -169,8 +209,15 @@ body {
 }
 
 @keyframes floatUp {
-  0% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-40px); }
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
 }
 
 /* НИЗ */
@@ -180,6 +227,9 @@ body {
 }
 
 .menu-btn {
+  --step: 4px;
+  --corner: 12px;
+
   flex: 1;
   height: 70px;
   display: flex;
@@ -198,7 +248,6 @@ body {
 
 <div id="app" class="box">
 
-  <!-- ВЕРХ -->
   <div class="top">
 
     <div>
@@ -217,7 +266,6 @@ body {
 
   </div>
 
-  <!-- ЭКРАН -->
   <div class="screen box">
 
     <div class="label">NEXT BACKGROUND</div>
@@ -237,7 +285,6 @@ body {
 
   </div>
 
-  <!-- НИЗ -->
   <div class="bottom">
 
     <div class="menu-btn box">
