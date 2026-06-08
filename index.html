@@ -148,7 +148,6 @@ body {
   gap: 20px;
 }
 
-/* 🔥 НОВЫЙ СТИЛЬ ПРОКАЧКИ */
 .upgrade-card {
   border: 2px solid #7f8f6f;
   padding: 15px;
@@ -197,6 +196,7 @@ body {
   left: 25px;
 }
 
+/* ПОЛЗУНОК */
 .range-wrapper {
   position: relative;
 }
@@ -245,7 +245,6 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 
   <div class="screen box">
-
     <div class="label">NEXT BACKGROUND</div>
 
     <div class="progress-row">
@@ -260,7 +259,6 @@ input[type=range]::-webkit-slider-thumb {
         <img src="button.png" id="coin">
       </div>
     </div>
-
   </div>
 
   <div class="bottom">
@@ -293,34 +291,9 @@ input[type=range]::-webkit-slider-thumb {
 <!-- ПРОКАЧКА -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
-
-    <!-- АВТОКЛИКЕР -->
-    <div class="upgrade-card" id="autoCard">
-      <div class="up-header">
-        <span>AUTO CLICKER</span>
-        <span id="autoLvl">LVL 0</span>
-      </div>
-      <div class="up-sub" id="autoPower">+0 CPS</div>
-
-      <div class="up-btn" id="autoBuy">BUY (150)</div>
-      <div class="switch" id="autoToggle" style="display:none;"></div>
-    </div>
-
-    <!-- СИЛА КЛИКА -->
-    <div class="upgrade-card">
-      <div class="up-header">
-        <span>CLICK POWER</span>
-        <span id="powerLvl">LVL 1</span>
-      </div>
-      <div class="up-sub" id="powerValue">+1 / click</div>
-
-      <div class="up-btn" id="powerBuy">BUY (150)</div>
-    </div>
-
     <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
       CLOSE
     </div>
-
   </div>
 </div>
 
@@ -330,12 +303,12 @@ input[type=range]::-webkit-slider-thumb {
 let score = 0;
 let best = 0;
 let volume = 1;
-
 let clickPower = 1;
 
-let autoLevel = 0;
-let autoActive = false;
-
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const progressEl = document.getElementById("progress");
+const progressText = document.getElementById("progressText");
 const coin = document.getElementById("coin");
 const clickSound = document.getElementById("clickSound");
 
@@ -352,62 +325,19 @@ clicker.onclick = () => {
   updateUI();
 };
 
-/* АВТОКЛИК */
-setInterval(()=>{
-  if(autoActive){
-    score += autoLevel;
-    updateUI();
-  }
-},1000);
-
 /* UI */
 function updateUI(){
   scoreEl.innerText = score;
+
   if(score>best){
     best=score;
     bestEl.innerText=best;
   }
 
-  let p = score%100;
-  progress.style.width=p+"%";
-  progressText.innerText=p+" / 100";
-
-  autoLvl.innerText="LVL "+autoLevel;
-  autoPower.innerText="+"+autoLevel+" CPS";
-
-  powerLvl.innerText="LVL "+clickPower;
-  powerValue.innerText="+"+clickPower+" / click";
+  let p = score % 100;
+  progressEl.style.width = p + "%";
+  progressText.innerText = p + " / 100";
 }
-
-/* АВТОКЛИКЕР */
-autoBuy.onclick=()=>{
-  let price = 150*(autoLevel+1);
-
-  if(score>=price){
-    score-=price;
-    autoLevel++;
-
-    autoBuy.innerText="UPGRADE ("+(150*(autoLevel+1))+")";
-    autoToggle.style.display="block";
-  }
-};
-
-autoToggle.onclick=()=>{
-  autoActive=!autoActive;
-  autoToggle.classList.toggle("active");
-};
-
-/* СИЛА */
-powerBuy.onclick=()=>{
-  let price = 150*clickPower;
-
-  if(score>=price){
-    score-=price;
-    clickPower++;
-
-    powerBuy.innerText="UPGRADE ("+(150*clickPower)+")";
-  }
-};
 
 /* ГРОМКОСТЬ */
 volume.oninput=(e)=>{
