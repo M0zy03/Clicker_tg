@@ -113,9 +113,6 @@ body {
   pointer-events: none;
 }
 
-/* ❌ убрали :active → делаем через JS */
-
-/* +1 */
 .plus {
   position: absolute;
   font-size: 14px;
@@ -126,6 +123,7 @@ body {
   100% { opacity: 0; transform: translateY(-40px); }
 }
 
+/* 🔥 НИЖНИЕ КНОПКИ ВЕРНУЛ */
 .bottom {
   display: flex;
   gap: 10px;
@@ -140,7 +138,7 @@ body {
 }
 .menu-btn img { width: 70%; }
 
-/* МОДАЛКА */
+/* настройки */
 #settingsModal {
   position: fixed;
   inset: 0;
@@ -158,7 +156,6 @@ body {
   gap: 20px;
 }
 
-/* переключатель */
 .switch {
   width: 50px;
   height: 25px;
@@ -182,14 +179,11 @@ body {
   left: 25px;
 }
 
-/* 🔥 УЛУЧШЕННЫЙ ПОЛЗУНОК */
 input[type=range] {
-  -webkit-appearance: none;
   width: 100%;
   height: 8px;
   background: #111;
   border: 2px solid #7f8f6f;
-  border-radius: 4px;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -198,14 +192,9 @@ input[type=range]::-webkit-slider-thumb {
   height: 18px;
   background: #b7c9a9;
   border: 2px solid #7f8f6f;
-  cursor: pointer;
   margin-top: -6px;
 }
 
-.close-btn {
-  text-align: center;
-  cursor: pointer;
-}
 </style>
 </head>
 
@@ -248,8 +237,16 @@ input[type=range]::-webkit-slider-thumb {
 
   </div>
 
+  <!-- 🔥 КНОПКИ СНИЗУ -->
+  <div class="bottom">
+    <div class="menu-btn box"><img src="upgrade.png"></div>
+    <div class="menu-btn box"><img src="stats.png"></div>
+    <div class="menu-btn box"><img src="trophy.png"></div>
+  </div>
+
 </div>
 
+<!-- настройки -->
 <div id="settingsModal">
   <div class="modal-box box">
 
@@ -258,12 +255,7 @@ input[type=range]::-webkit-slider-thumb {
       <div class="switch active" id="vibrationToggle"></div>
     </div>
 
-    <div>
-      <div style="margin-bottom:10px;">VOLUME</div>
-      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
-    </div>
-
-    <div class="close-btn" id="closeSettings">CLOSE</div>
+    <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
 
   </div>
 </div>
@@ -279,12 +271,24 @@ let volume = 1;
 const coin = document.getElementById("coin");
 const clickSound = document.getElementById("clickSound");
 
-/* 🔥 СТАБИЛЬНАЯ АНИМАЦИЯ */
+/* 🔥 АНИМАЦИЯ */
 function animateClick() {
   coin.style.transform = "scale(0.85)";
-  setTimeout(() => {
-    coin.style.transform = "scale(1)";
-  }, 80);
+  setTimeout(() => coin.style.transform = "scale(1)", 80);
+}
+
+/* 🔥 МАКСИМАЛЬНАЯ ВИБРАЦИЯ */
+function doVibrate() {
+  if (!vibration) return;
+
+  try {
+    Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
+    Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+  } catch(e) {}
+
+  if (navigator.vibrate) {
+    navigator.vibrate([20, 10, 20]);
+  }
 }
 
 /* КЛИК */
@@ -292,6 +296,11 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
   animateClick();
+  doVibrate();
+
+  clickSound.currentTime = 0;
+  clickSound.volume = volume;
+  clickSound.play();
 
   score++;
   document.getElementById("score").innerText = score;
@@ -301,46 +310,19 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
     document.getElementById("best").innerText = best;
   }
 
-  /* 🔥 ВИБРАЦИЯ */
-  if (vibration && Telegram.WebApp.HapticFeedback) {
-    Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
-  }
-
-  /* 🔊 ЗВУК */
-  clickSound.currentTime = 0;
-  clickSound.volume = volume;
-  clickSound.play();
-
-  /* +1 */
-  const el = document.createElement("div");
-  el.className = "plus";
-  el.innerText = "+1";
-  el.style.left = e.clientX + "px";
-  el.style.top = e.clientY + "px";
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 600);
-
   let progress = score % 100;
   document.getElementById("progress").style.width = progress + "%";
   document.getElementById("progressText").innerText = progress + " / 100";
 });
 
-/* НАСТРОЙКИ */
-const modal = document.getElementById("settingsModal");
-
+/* настройки */
 document.getElementById("openSettings").onclick = () => {
-  modal.style.display = "flex";
+  document.getElementById("settingsModal").style.display = "flex";
 };
 
-document.getElementById("closeSettings").onclick = () => {
-  modal.style.display = "none";
-};
-
-const toggle = document.getElementById("vibrationToggle");
-
-toggle.onclick = () => {
+document.getElementById("vibrationToggle").onclick = function() {
   vibration = !vibration;
-  toggle.classList.toggle("active");
+  this.classList.toggle("active");
 };
 
 document.getElementById("volume").oninput = (e) => {
