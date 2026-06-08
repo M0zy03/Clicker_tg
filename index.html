@@ -140,38 +140,7 @@ body {
   opacity:1;
 }
 
-/* остальное без изменений */
-.upgrade-item {
-  border:2px solid #7f8f6f;
-  padding:15px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.locked { opacity:0.4; }
-
-.switch {
-  width:50px;
-  height:25px;
-  border:2px solid #7f8f6f;
-  position:relative;
-  cursor:pointer;
-}
-
-.switch::after {
-  content:"";
-  width:20px;
-  height:20px;
-  background:#b7c9a9;
-  position:absolute;
-  top:1px;
-  left:1px;
-  transition:0.2s;
-}
-
-.switch.active::after { left:25px; }
-
+/* остальные стили */
 .range-wrapper { position:relative; height:14px; }
 
 .range-fill {
@@ -274,11 +243,6 @@ input[type=range]::-webkit-slider-thumb {
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
-    <div id="autoClicker" class="upgrade-item locked">
-      <span>AUTO CLICKER (150)</span>
-      <div class="switch" id="autoToggle"></div>
-    </div>
-
     <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
       CLOSE
     </div>
@@ -289,12 +253,58 @@ input[type=range]::-webkit-slider-thumb {
 <audio id="clickSound" src="click.mp3"></audio>
 
 <script>
-/* только анимация открытия/закрытия */
+let score = 0;
+let best = 0;
+let volume = 1;
+
+const coin = document.getElementById("coin");
+const clickSound = document.getElementById("clickSound");
+
+/* КЛИК */
+document.getElementById("clicker").addEventListener("pointerdown",(e)=>{
+  e.preventDefault();
+
+  coin.classList.add("click-anim");
+  setTimeout(()=>coin.classList.remove("click-anim"),80);
+
+  clickSound.currentTime = 0;
+  clickSound.volume = volume;
+  clickSound.play();
+
+  score++;
+  document.getElementById("score").innerText = score;
+
+  if(score > best){
+    best = score;
+    document.getElementById("best").innerText = best;
+  }
+
+  let progress = score % 100;
+  document.getElementById("progress").style.width = progress + "%";
+  document.getElementById("progressText").innerText = progress + " / 100";
+});
+
+/* 🎬 АНИМАЦИЯ МОДАЛОК */
 openSettings.onclick = ()=> settingsModal.classList.add("active");
 closeSettings.onclick = ()=> settingsModal.classList.remove("active");
 
 openUpgrade.onclick = ()=> upgradeModal.classList.add("active");
 closeUpgrade.onclick = ()=> upgradeModal.classList.remove("active");
+
+/* громкость */
+const volumeInput = document.getElementById("volume");
+const volumeFill = document.getElementById("volumeFill");
+
+function updateVolumeUI(){
+  volumeFill.style.width = (volume*100)+"%";
+}
+
+volumeInput.oninput = (e)=>{
+  volume = parseFloat(e.target.value);
+  updateVolumeUI();
+};
+
+updateVolumeUI();
 
 Telegram.WebApp.expand();
 </script>
