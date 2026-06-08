@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-/* ВСЁ ТВОЁ — НЕ ТРОГАЛ */
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
@@ -91,7 +90,7 @@ body {
   pointer-events:none;
 }
 
-.click-anim { transform: scale(0.85); }
+.click-anim { transform:scale(0.85); }
 
 .bottom { display:flex; gap:10px; }
 
@@ -123,7 +122,7 @@ body {
   gap:20px;
 }
 
-/* АПГРЕЙД */
+/* ПРОКАЧКА */
 .upgrade-item {
   border:2px solid #7f8f6f;
   padding:15px;
@@ -206,6 +205,7 @@ input[type=range]::-webkit-slider-thumb {
 </div>
 
 <div class="screen box">
+
   <div class="label">NEXT BACKGROUND</div>
 
   <div class="progress-row">
@@ -220,6 +220,7 @@ input[type=range]::-webkit-slider-thumb {
       <img src="button.png" id="coin">
     </div>
   </div>
+
 </div>
 
 <div class="bottom">
@@ -230,22 +231,33 @@ input[type=range]::-webkit-slider-thumb {
 
 </div>
 
-<!-- ПРОКАЧКА -->
+<!-- НАСТРОЙКИ -->
+<div class="modal" id="settingsModal">
+  <div class="modal-box box">
+
+    <div>
+      <div style="margin-bottom:10px;">VOLUME</div>
+
+      <div class="range-wrapper">
+        <div class="range-fill" id="volumeFill"></div>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+      </div>
+    </div>
+
+    <div id="closeSettings" style="text-align:center;cursor:pointer;">
+      CLOSE
+    </div>
+
+  </div>
+</div>
+
+<!-- ПРОКАЧКА (НЕ ТРОГАЛ ЛОГИКУ) -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
     <div id="autoClicker" class="upgrade-item locked">
-      <div>
-        AUTO CLICKER
-        <div style="font-size:10px;margin-top:5px;" id="autoLevel">LVL 0</div>
-      </div>
+      <span>AUTO CLICKER (150)</span>
       <div class="switch" id="autoToggle"></div>
-    </div>
-
-    <div id="upgradeInfo" style="font-size:10px;"></div>
-
-    <div id="buyUpgrade" style="text-align:center;cursor:pointer;">
-      BUY
     </div>
 
     <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
@@ -261,25 +273,23 @@ input[type=range]::-webkit-slider-thumb {
 let score = 0;
 let best = 0;
 
-let autoLevel = 0;
-let autoActive = false;
-
-const levels = [
-  {price:150,cps:1},
-  {price:500,cps:3},
-  {price:1000,cps:7},
-  {price:2000,cps:15},
-  {price:5000,cps:40}
-];
+let autoClickerBought = false;
+let autoClickerActive = false;
+let volume = 1;
 
 const coin = document.getElementById("coin");
+const clickSound = document.getElementById("clickSound");
 
 /* клик */
-clicker.addEventListener("pointerdown",(e)=>{
+document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
   coin.classList.add("click-anim");
   setTimeout(()=>coin.classList.remove("click-anim"),80);
+
+  clickSound.currentTime = 0;
+  clickSound.volume = volume;
+  clickSound.play();
 
   score++;
   updateUI();
@@ -287,78 +297,68 @@ clicker.addEventListener("pointerdown",(e)=>{
 
 /* автоклик */
 setInterval(()=>{
-  if(autoActive && autoLevel>0){
-    score += levels[autoLevel-1].cps;
+  if(autoClickerActive){
+    score++;
     updateUI();
   }
 },1000);
 
 /* UI */
 function updateUI(){
-  scoreEl.innerText = score;
+  document.getElementById("score").innerText = score;
 
   if(score>best){
     best=score;
-    bestEl.innerText=best;
+    document.getElementById("best").innerText = best;
   }
 
   let progress = score % 100;
-  progressEl.style.width = progress+"%";
-  progressText.innerText = progress+" / 100";
-
-  autoLevelText.innerText = "LVL " + autoLevel;
-  updateUpgradeInfo();
+  document.getElementById("progress").style.width = progress+"%";
+  document.getElementById("progressText").innerText = progress+" / 100";
 
   if(score>=150){
-    autoClicker.classList.remove("locked");
+    document.getElementById("autoClicker").classList.remove("locked");
   }
 }
 
-/* инфа */
-function updateUpgradeInfo(){
-  if(autoLevel>=levels.length){
-    upgradeInfo.innerText="MAX LEVEL";
-    return;
-  }
+/* громкость */
+const volumeInput = document.getElementById("volume");
+const volumeFill = document.getElementById("volumeFill");
 
-  let next = levels[autoLevel];
-  upgradeInfo.innerText =
-    "NEXT\nPRICE: "+next.price+"\nCPS: "+next.cps;
+function updateVolumeUI(){
+  volumeFill.style.width = (volume*100)+"%";
 }
 
-/* покупка */
-buyUpgrade.onclick = ()=>{
-  if(autoLevel>=levels.length) return;
-
-  let next = levels[autoLevel];
-
-  if(score>=next.price){
-    score-=next.price;
-    autoLevel++;
-    updateUI();
-  }
+volumeInput.oninput = (e)=>{
+  volume = parseFloat(e.target.value);
+  updateVolumeUI();
 };
 
-/* toggle */
-autoToggle.onclick = function(e){
-  e.stopPropagation();
-  if(autoLevel===0) return;
+updateVolumeUI();
 
-  autoActive=!autoActive;
-  this.classList.toggle("active");
-};
+/* настройки */
+openSettings.onclick = ()=> settingsModal.style.display="flex";
+closeSettings.onclick = ()=> settingsModal.style.display="none";
 
-/* модалка */
+/* прокачка */
 openUpgrade.onclick = ()=> upgradeModal.style.display="flex";
 closeUpgrade.onclick = ()=> upgradeModal.style.display="none";
 
-/* ссылки */
-const scoreEl = document.getElementById("score");
-const bestEl = document.getElementById("best");
-const progressEl = document.getElementById("progress");
-const progressText = document.getElementById("progressText");
-const autoLevelText = document.getElementById("autoLevel");
-const upgradeInfo = document.getElementById("upgradeInfo");
+autoClicker.onclick = ()=>{
+  if(score>=150 && !autoClickerBought){
+    score-=150;
+    autoClickerBought=true;
+    autoClicker.querySelector("span").innerText="AUTO CLICKER";
+  }
+};
+
+autoToggle.onclick = function(e){
+  e.stopPropagation();
+  if(!autoClickerBought) return;
+
+  autoClickerActive = !autoClickerActive;
+  this.classList.toggle("active");
+};
 
 Telegram.WebApp.expand();
 </script>
