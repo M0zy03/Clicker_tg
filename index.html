@@ -26,15 +26,35 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 ИДЕАЛЬНЫЕ РАМКИ КАК НА СКРИНЕ */
+/* 🔥 ПИКСЕЛЬНЫЕ УГЛЫ 1 В 1 */
 .box {
+  position: relative;
   border: 2px solid #7f8f6f;
+}
 
-  /* 👇 ВОТ ОНО — минимальное скругление */
-  border-radius: 6px;
+/* делаем "ступеньки" */
+.box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 
-  /* 👇 внутренняя линия */
-  box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
+  box-shadow:
+    /* верх левый угол */
+    -2px 2px 0 #000,
+    -4px 4px 0 #000,
+
+    /* верх правый */
+    calc(100% + 2px) 2px 0 #000,
+    calc(100% + 4px) 4px 0 #000,
+
+    /* низ левый */
+    -2px calc(100% - 2px) 0 #000,
+    -4px calc(100% - 4px) 0 #000,
+
+    /* низ правый */
+    calc(100% + 2px) calc(100% - 2px) 0 #000,
+    calc(100% + 4px) calc(100% - 4px) 0 #000;
 }
 
 /* ОСНОВА */
@@ -84,7 +104,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 15px;
-
   background: url("bg_main.png") center/cover no-repeat;
 }
 
@@ -99,9 +118,6 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
-
-  border-radius: 6px; /* чуть меньше чем у блоков */
-
   overflow: hidden;
 }
 
@@ -135,7 +151,7 @@ body {
 
 /* 🪙 МОНЕТА */
 #coin {
-  width: 130%; /* 👈 меняешь тут */
+  width: 130%;
   object-fit: contain;
   pointer-events: none;
 }
@@ -172,9 +188,8 @@ body {
   overflow: hidden;
 }
 
-/* 🔘 КНОПКИ */
 .menu-btn img {
-  width: 70%; /* 👈 меняешь тут */
+  width: 70%;
 }
 </style>
 </head>
