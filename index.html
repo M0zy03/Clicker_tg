@@ -122,6 +122,41 @@ body {
   gap:20px;
 }
 
+/* 🔥 АККУРАТНЫЙ ПОЛЗУНОК */
+.range-wrapper {
+  position:relative;
+  height:14px;
+}
+
+.range-fill {
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background:#b7c9a9;
+  border-radius:4px;
+}
+
+input[type=range] {
+  -webkit-appearance:none;
+  width:100%;
+  height:14px;
+  background:#111;
+  border:2px solid #7f8f6f;
+  border-radius:4px;
+  position:relative;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none;
+  width:18px;
+  height:18px;
+  background:#b7c9a9;
+  border:2px solid #7f8f6f;
+  border-radius:4px;
+  cursor:pointer;
+}
+
 /* ПРОКАЧКА */
 .upgrade-item {
   border:2px solid #7f8f6f;
@@ -153,34 +188,6 @@ body {
 }
 
 .switch.active::after { left:25px; }
-
-/* ПОЛЗУНОК */
-.range-wrapper { position:relative; }
-
-.range-fill {
-  position:absolute;
-  top:0;
-  left:0;
-  height:100%;
-  background:#b7c9a9;
-  pointer-events:none;
-}
-
-input[type=range] {
-  -webkit-appearance:none;
-  width:100%;
-  height:10px;
-  background:#111;
-  border:2px solid #7f8f6f;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none;
-  width:20px;
-  height:20px;
-  background:#b7c9a9;
-  border:2px solid #7f8f6f;
-}
 </style>
 </head>
 
@@ -251,13 +258,22 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 </div>
 
-<!-- ПРОКАЧКА (НЕ ТРОГАЛ ЛОГИКУ) -->
+<!-- ПРОКАЧКА -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
     <div id="autoClicker" class="upgrade-item locked">
-      <span>AUTO CLICKER (150)</span>
+      <div>
+        AUTO CLICKER
+        <div style="font-size:10px;margin-top:5px;" id="autoLevel">LVL 0</div>
+      </div>
       <div class="switch" id="autoToggle"></div>
+    </div>
+
+    <div id="upgradeInfo" style="font-size:10px;"></div>
+
+    <div id="buyUpgrade" style="text-align:center;cursor:pointer;">
+      BUY
     </div>
 
     <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
@@ -272,23 +288,31 @@ input[type=range]::-webkit-slider-thumb {
 <script>
 let score = 0;
 let best = 0;
-
-let autoClickerBought = false;
-let autoClickerActive = false;
 let volume = 1;
+
+let autoLevel = 0;
+let autoActive = false;
+
+const levels = [
+  {price:150,cps:1},
+  {price:500,cps:3},
+  {price:1000,cps:7},
+  {price:2000,cps:15},
+  {price:5000,cps:40}
+];
 
 const coin = document.getElementById("coin");
 const clickSound = document.getElementById("clickSound");
 
 /* клик */
-document.getElementById("clicker").addEventListener("pointerdown", (e) => {
+clicker.addEventListener("pointerdown",(e)=>{
   e.preventDefault();
 
   coin.classList.add("click-anim");
   setTimeout(()=>coin.classList.remove("click-anim"),80);
 
-  clickSound.currentTime = 0;
-  clickSound.volume = volume;
+  clickSound.currentTime=0;
+  clickSound.volume=volume;
   clickSound.play();
 
   score++;
@@ -297,68 +321,96 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
 
 /* автоклик */
 setInterval(()=>{
-  if(autoClickerActive){
-    score++;
+  if(autoActive && autoLevel>0){
+    score += levels[autoLevel-1].cps;
     updateUI();
   }
 },1000);
 
 /* UI */
 function updateUI(){
-  document.getElementById("score").innerText = score;
+  scoreEl.innerText=score;
 
   if(score>best){
     best=score;
-    document.getElementById("best").innerText = best;
+    bestEl.innerText=best;
   }
 
-  let progress = score % 100;
-  document.getElementById("progress").style.width = progress+"%";
-  document.getElementById("progressText").innerText = progress+" / 100";
+  let progress = score%100;
+  progressEl.style.width=progress+"%";
+  progressText.innerText=progress+" / 100";
+
+  autoLevelText.innerText="LVL "+autoLevel;
+  updateUpgradeInfo();
 
   if(score>=150){
-    document.getElementById("autoClicker").classList.remove("locked");
+    autoClicker.classList.remove("locked");
   }
 }
 
-/* громкость */
-const volumeInput = document.getElementById("volume");
-const volumeFill = document.getElementById("volumeFill");
+/* инфа */
+function updateUpgradeInfo(){
+  if(autoLevel>=levels.length){
+    upgradeInfo.innerText="MAX LEVEL";
+    return;
+  }
 
-function updateVolumeUI(){
-  volumeFill.style.width = (volume*100)+"%";
+  let next = levels[autoLevel];
+  upgradeInfo.innerText =
+    "NEXT\nPRICE: "+next.price+"\nCPS: "+next.cps;
 }
 
-volumeInput.oninput = (e)=>{
-  volume = parseFloat(e.target.value);
+/* покупка */
+buyUpgrade.onclick=()=>{
+  if(autoLevel>=levels.length) return;
+
+  let next=levels[autoLevel];
+
+  if(score>=next.price){
+    score-=next.price;
+    autoLevel++;
+    updateUI();
+  }
+};
+
+/* toggle */
+autoToggle.onclick=function(e){
+  e.stopPropagation();
+  if(autoLevel===0) return;
+
+  autoActive=!autoActive;
+  this.classList.toggle("active");
+};
+
+/* громкость */
+const volumeInput=document.getElementById("volume");
+const volumeFill=document.getElementById("volumeFill");
+
+function updateVolumeUI(){
+  volumeFill.style.width=(volume*100)+"%";
+}
+
+volumeInput.oninput=(e)=>{
+  volume=parseFloat(e.target.value);
   updateVolumeUI();
 };
 
 updateVolumeUI();
 
-/* настройки */
-openSettings.onclick = ()=> settingsModal.style.display="flex";
-closeSettings.onclick = ()=> settingsModal.style.display="none";
+/* окна */
+openSettings.onclick=()=>settingsModal.style.display="flex";
+closeSettings.onclick=()=>settingsModal.style.display="none";
 
-/* прокачка */
-openUpgrade.onclick = ()=> upgradeModal.style.display="flex";
-closeUpgrade.onclick = ()=> upgradeModal.style.display="none";
+openUpgrade.onclick=()=>upgradeModal.style.display="flex";
+closeUpgrade.onclick=()=>upgradeModal.style.display="none";
 
-autoClicker.onclick = ()=>{
-  if(score>=150 && !autoClickerBought){
-    score-=150;
-    autoClickerBought=true;
-    autoClicker.querySelector("span").innerText="AUTO CLICKER";
-  }
-};
-
-autoToggle.onclick = function(e){
-  e.stopPropagation();
-  if(!autoClickerBought) return;
-
-  autoClickerActive = !autoClickerActive;
-  this.classList.toggle("active");
-};
+/* ссылки */
+const scoreEl=document.getElementById("score");
+const bestEl=document.getElementById("best");
+const progressEl=document.getElementById("progress");
+const progressText=document.getElementById("progressText");
+const autoLevelText=document.getElementById("autoLevel");
+const upgradeInfo=document.getElementById("upgradeInfo");
 
 Telegram.WebApp.expand();
 </script>
