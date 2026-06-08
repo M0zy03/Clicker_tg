@@ -5,216 +5,139 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
-  background: #000;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Press Start 2P', monospace;
-  color: #b7c9a9;
+  background:#000;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Press Start 2P', monospace;
+  color:#b7c9a9;
 }
 
 .box {
-  border: 2px solid #7f8f6f;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
+  border:2px solid #7f8f6f;
+  border-radius:8px;
+  box-shadow: inset 0 0 0 1px rgba(183,201,169,0.15);
 }
 
 #app {
-  width: 420px;
-  height: 90vh;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  width:420px;
+  height:90vh;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.top { display:flex; justify-content:space-between; align-items:center; }
 
-.label { font-size: 10px; opacity: 0.7; }
-.value { font-size: 22px; margin-top: 5px; }
+.label { font-size:10px; opacity:0.7; }
+.value { font-size:22px; margin-top:5px; }
 
-.settings {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-.settings img { width: 62px; }
+.settings { width:45px; height:45px; display:flex; justify-content:center; align-items:center; cursor:pointer; }
+.settings img { width:62px; }
 
 .screen {
-  flex: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: url("bg_main.png") center/cover no-repeat;
+  flex:1;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  background:url("bg_main.png") center/cover no-repeat;
 }
 
-.progress-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.progress-row { display:flex; align-items:center; gap:10px; }
 
 .progress {
-  flex: 1;
-  height: 14px;
-  border: 2px solid #7f8f6f;
-  border-radius: 6px;
-  overflow: hidden;
+  flex:1;
+  height:14px;
+  border:2px solid #7f8f6f;
+  border-radius:6px;
+  overflow:hidden;
 }
 
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #b7c9a9;
-}
+.progress-fill { height:100%; width:0%; background:#b7c9a9; }
+.progress-text { font-size:12px; }
 
-.progress-text { font-size: 12px; }
-
-.center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+.center { flex:1; display:flex; justify-content:center; align-items:center; }
 
 #clicker {
-  width: 220px;
-  height: 220px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  width:220px;
+  height:220px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
 }
 
 #coin {
-  width: 130%;
-  transition: transform 0.08s ease;
-  pointer-events: none;
+  width:130%;
+  transition: transform 0.08s;
+  pointer-events:none;
 }
 
-.click-anim { transform: scale(0.85); }
+.click-anim { transform:scale(0.85); }
 
-.bottom {
-  display: flex;
-  gap: 10px;
-}
+.bottom { display:flex; gap:10px; }
+.menu-btn { flex:1; height:70px; display:flex; justify-content:center; align-items:center; cursor:pointer; }
+.menu-btn img { width:70%; }
 
-.menu-btn {
-  flex: 1;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-.menu-btn img { width: 70%; }
-
-/* МОДАЛКИ */
+/* МОДАЛКА */
 .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  justify-content:center;
+  align-items:center;
 }
 
 .modal-box {
-  width: 320px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width:360px;
+  max-height:80vh;
+  overflow-y:auto;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
 }
 
-/* 🔥 АПГРЕЙД БЛОК */
+/* УЛУЧШЕНИЯ */
 .upgrade-item {
-  border: 2px solid #7f8f6f;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border:2px solid #7f8f6f;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.locked { opacity: 0.4; }
+.locked { opacity:0.4; }
 
-/* ПЕРЕКЛЮЧАТЕЛЬ */
+/* SWITCH */
 .switch {
-  width: 50px;
-  height: 25px;
-  border: 2px solid #7f8f6f;
-  position: relative;
-  cursor: pointer;
+  width:50px;
+  height:25px;
+  border:2px solid #7f8f6f;
+  position:relative;
+  cursor:pointer;
 }
-
 .switch::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: 0.2s;
+  content:"";
+  width:20px;
+  height:20px;
+  background:#b7c9a9;
+  position:absolute;
+  top:1px;
+  left:1px;
+  transition:0.2s;
 }
-
-.switch.active::after {
-  left: 25px;
-}
-
-/* 🔥 КРАСИВЫЙ ПОЛЗУНОК */
-.range-wrapper {
-  position: relative;
-}
-
-.range-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #b7c9a9;
-  pointer-events: none;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 10px;
-  background: #111;
-  border: 2px solid #7f8f6f;
-  position: relative;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  border: 2px solid #7f8f6f;
-  cursor: pointer;
-  margin-top: -6px;
-}
+.switch.active::after { left:25px; }
 
 </style>
 </head>
@@ -223,182 +146,154 @@ input[type=range]::-webkit-slider-thumb {
 
 <div id="app" class="box">
 
-  <div class="top">
-    <div>
-      <div class="label">SCORE</div>
-      <div class="value" id="score">0</div>
-    </div>
-
-    <div style="text-align:center;">
-      <div class="label">BEST</div>
-      <div class="value" id="best">0</div>
-    </div>
-
-    <div class="settings box" id="openSettings">
-      <img src="settings.png">
-    </div>
-  </div>
-
-  <div class="screen box">
-
-    <div class="label">NEXT BACKGROUND</div>
-
-    <div class="progress-row">
-      <div class="progress">
-        <div class="progress-fill" id="progress"></div>
-      </div>
-      <div class="progress-text" id="progressText">0 / 100</div>
-    </div>
-
-    <div class="center">
-      <div id="clicker">
-        <img src="button.png" id="coin">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bottom">
-    <div class="menu-btn box" id="openUpgrade"><img src="upgrade.png"></div>
-    <div class="menu-btn box"><img src="stats.png"></div>
-    <div class="menu-btn box"><img src="trophy.png"></div>
-  </div>
-
+<div class="top">
+  <div><div class="label">SCORE</div><div class="value" id="score">0</div></div>
+  <div style="text-align:center;"><div class="label">BEST</div><div class="value" id="best">0</div></div>
+  <div class="settings box" id="openUpgrade"><img src="upgrade.png"></div>
 </div>
 
-<!-- НАСТРОЙКИ -->
-<div class="modal" id="settingsModal">
-  <div class="modal-box box">
-
-    <div>
-      <div style="margin-bottom:10px;">VOLUME</div>
-
-      <div class="range-wrapper">
-        <div class="range-fill" id="volumeFill"></div>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-      </div>
-    </div>
-
-    <div id="closeSettings" style="text-align:center;cursor:pointer;">
-      CLOSE
-    </div>
-
+<div class="screen box">
+  <div class="progress-row">
+    <div class="progress"><div class="progress-fill" id="progress"></div></div>
+    <div class="progress-text" id="progressText">0 / 100</div>
   </div>
+
+  <div class="center">
+    <div id="clicker">
+      <img src="button.png" id="coin">
+    </div>
+  </div>
+</div>
+
 </div>
 
 <!-- ПРОКАЧКА -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
-    <div id="autoClicker" class="upgrade-item locked">
-      <span>AUTO CLICKER (150)</span>
+    <div id="autoClicker" class="upgrade-item">
+      <div>
+        AUTO CLICKER  
+        <div style="font-size:10px; margin-top:5px;" id="autoLevel">
+          LVL 0
+        </div>
+      </div>
+
       <div class="switch" id="autoToggle"></div>
     </div>
 
-    <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
+    <div id="upgradeInfo" style="font-size:10px; line-height:1.6;"></div>
+
+    <div id="buyUpgrade" style="text-align:center; cursor:pointer;">
+      BUY
+    </div>
+
+    <div id="closeUpgrade" style="text-align:center; cursor:pointer;">
       CLOSE
     </div>
 
   </div>
 </div>
 
-<audio id="clickSound" src="click.mp3"></audio>
-
 <script>
 let score = 0;
 let best = 0;
 
-let autoClickerBought = false;
-let autoClickerActive = false;
-let volume = 1;
+let autoLevel = 0;
+let autoActive = false;
+
+/* уровни */
+const levels = [
+  {price:150, cps:1},
+  {price:500, cps:3},
+  {price:1000, cps:7},
+  {price:2000, cps:15},
+  {price:5000, cps:40}
+];
 
 const coin = document.getElementById("coin");
-const clickSound = document.getElementById("clickSound");
-
-/* анимация */
-function animateClick() {
-  coin.classList.add("click-anim");
-  setTimeout(() => coin.classList.remove("click-anim"), 80);
-}
 
 /* клик */
-document.getElementById("clicker").addEventListener("pointerdown", (e) => {
+clicker.addEventListener("pointerdown", (e)=>{
   e.preventDefault();
 
-  animateClick();
-
-  clickSound.currentTime = 0;
-  clickSound.volume = volume;
-  clickSound.play();
+  coin.classList.add("click-anim");
+  setTimeout(()=>coin.classList.remove("click-anim"),80);
 
   score++;
   updateUI();
 });
 
 /* автоклик */
-setInterval(() => {
-  if (autoClickerActive) {
-    score++;
+setInterval(()=>{
+  if(autoActive && autoLevel>0){
+    score += levels[autoLevel-1].cps;
     updateUI();
   }
-}, 1000);
+},1000);
 
 /* UI */
-function updateUI() {
-  document.getElementById("score").innerText = score;
+function updateUI(){
+  scoreEl.innerText = score;
 
-  if (score > best) {
-    best = score;
-    document.getElementById("best").innerText = best;
+  if(score>best){
+    best=score;
+    bestEl.innerText=best;
   }
 
   let progress = score % 100;
-  document.getElementById("progress").style.width = progress + "%";
-  document.getElementById("progressText").innerText = progress + " / 100";
+  progressEl.style.width = progress+"%";
+  progressText.innerText = progress+" / 100";
 
-  if (score >= 150) {
-    document.getElementById("autoClicker").classList.remove("locked");
+  autoLevelText.innerText = "LVL " + autoLevel;
+
+  updateUpgradeInfo();
+}
+
+/* апгрейд инфа */
+function updateUpgradeInfo(){
+  if(autoLevel >= levels.length){
+    upgradeInfo.innerText = "MAX LEVEL";
+    return;
   }
+
+  let next = levels[autoLevel];
+  upgradeInfo.innerText = 
+    "NEXT:\nPRICE: " + next.price + "\nCPS: " + next.cps;
 }
 
-/* громкость визуал */
-const volumeInput = document.getElementById("volume");
-const volumeFill = document.getElementById("volumeFill");
+/* купить */
+buyUpgrade.onclick = ()=>{
+  if(autoLevel >= levels.length) return;
 
-function updateVolumeUI() {
-  volumeFill.style.width = (volume * 100) + "%";
-}
+  let next = levels[autoLevel];
 
-volumeInput.oninput = (e) => {
-  volume = parseFloat(e.target.value);
-  updateVolumeUI();
-};
-
-updateVolumeUI();
-
-/* настройки */
-openSettings.onclick = () => settingsModal.style.display = "flex";
-closeSettings.onclick = () => settingsModal.style.display = "none";
-
-/* апгрейд */
-openUpgrade.onclick = () => upgradeModal.style.display = "flex";
-closeUpgrade.onclick = () => upgradeModal.style.display = "none";
-
-autoClicker.onclick = () => {
-  if (score >= 150 && !autoClickerBought) {
-    score -= 150;
-    autoClickerBought = true;
-    autoClicker.querySelector("span").innerText = "AUTO CLICKER";
+  if(score >= next.price){
+    score -= next.price;
+    autoLevel++;
+    updateUI();
   }
 };
 
-autoToggle.onclick = function(e) {
-  e.stopPropagation();
-  if (!autoClickerBought) return;
+/* включение */
+autoToggle.onclick = function(){
+  if(autoLevel === 0) return;
 
-  autoClickerActive = !autoClickerActive;
+  autoActive = !autoActive;
   this.classList.toggle("active");
 };
+
+/* открыть */
+openUpgrade.onclick = ()=> upgradeModal.style.display="flex";
+closeUpgrade.onclick = ()=> upgradeModal.style.display="none";
+
+/* ссылки */
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const progressEl = document.getElementById("progress");
+const progressText = document.getElementById("progressText");
+const autoLevelText = document.getElementById("autoLevel");
+const upgradeInfo = document.getElementById("upgradeInfo");
 
 Telegram.WebApp.expand();
 </script>
