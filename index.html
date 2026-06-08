@@ -125,14 +125,19 @@ body{
   opacity:1;
 }
 
-/* ПОЛЗУНОК */
-.range-wrapper{position:relative;height:14px;}
+/* ПОЛЗУНОК (ФИКС) */
+.range-wrapper{
+  position:relative;
+  height:14px;
+}
 
 .range-fill{
-  position:absolute;height:100%;
+  position:absolute;
+  height:100%;
   background:#b7c9a9;
   border-radius:4px;
   width:100%;
+  pointer-events:none; /* 🔥 фикс */
 }
 
 input[type=range]{
@@ -141,6 +146,8 @@ input[type=range]{
   background:#111;
   border:2px solid #7f8f6f;
   border-radius:4px;
+  position:relative;
+  z-index:2;
 }
 
 input[type=range]::-webkit-slider-thumb{
@@ -231,8 +238,8 @@ input[type=range]::-webkit-slider-thumb{
 <!-- НАСТРОЙКИ -->
 <div class="modal" id="settingsModal">
   <div class="modal-box box">
-
     <div>VOLUME</div>
+
     <div class="range-wrapper">
       <div class="range-fill" id="volumeFill"></div>
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
@@ -249,7 +256,7 @@ input[type=range]::-webkit-slider-thumb{
     <div id="autoClicker" class="upgrade-item locked">
       <div>
         AUTO CLICKER
-        <div id="autoLevel">LVL 0</div>
+        <div id="autoLevel" style="font-size:10px; opacity:0.6;">LVL 0</div>
       </div>
       <div class="switch" id="autoToggle"></div>
     </div>
@@ -278,7 +285,6 @@ const levels=[
 
 const clickSound=document.getElementById("clickSound");
 
-/* КЛИК */
 clicker.addEventListener("pointerdown",(e)=>{
   e.preventDefault();
 
@@ -293,7 +299,6 @@ clicker.addEventListener("pointerdown",(e)=>{
   updateUI();
 });
 
-/* АВТОКЛИК */
 setInterval(()=>{
   if(autoActive && autoLevel>0){
     score+=levels[autoLevel-1].cps;
@@ -301,7 +306,6 @@ setInterval(()=>{
   }
 },1000);
 
-/* UI */
 function updateUI(){
   scoreEl.innerText=score;
 
@@ -327,10 +331,9 @@ function updateUpgradeInfo(){
     return;
   }
   let n=levels[autoLevel];
-  upgradeInfo.innerHTML=`PRICE: ${n.price} | CPS: ${n.cps}`;
+  upgradeInfo.innerHTML=`<span style="opacity:0.6;">PRICE: ${n.price} | CPS: ${n.cps}</span>`;
 }
 
-/* ПОКУПКА */
 buyUpgrade.onclick=()=>{
   if(autoLevel>=levels.length) return;
 
@@ -342,7 +345,6 @@ buyUpgrade.onclick=()=>{
   }
 };
 
-/* TOGGLE */
 autoToggle.onclick=(e)=>{
   e.stopPropagation();
   if(autoLevel===0) return;
@@ -351,21 +353,18 @@ autoToggle.onclick=(e)=>{
   autoToggle.classList.toggle("active");
 };
 
-/* ГРОМКОСТЬ */
 volumeSlider.addEventListener("input",(e)=>{
   volume=parseFloat(e.target.value);
   volumeFill.style.width=(volume*100)+"%";
   clickSound.volume=volume;
 });
 
-/* МОДАЛКИ */
 openSettings.onclick=()=>settingsModal.classList.add("active");
 closeSettings.onclick=()=>settingsModal.classList.remove("active");
 
 openUpgrade.onclick=()=>upgradeModal.classList.add("active");
 closeUpgrade.onclick=()=>upgradeModal.classList.remove("active");
 
-/* ссылки */
 const scoreEl=document.getElementById("score");
 const bestEl=document.getElementById("best");
 const progress=document.getElementById("progress");
