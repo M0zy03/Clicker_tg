@@ -113,6 +113,11 @@ body {
   pointer-events: none;
 }
 
+/* 🔥 АНИМАЦИЯ */
+.click-anim {
+  transform: scale(0.85);
+}
+
 /* +1 */
 .plus {
   position: absolute;
@@ -158,15 +163,36 @@ body {
   gap: 20px;
 }
 
-/* КНОПКА АПГРЕЙДА */
 .upgrade-item {
   border: 2px solid #7f8f6f;
   padding: 15px;
   cursor: pointer;
 }
 
-.locked {
-  opacity: 0.4;
+.locked { opacity: 0.4; }
+
+/* переключатель */
+.switch {
+  width: 50px;
+  height: 25px;
+  border: 2px solid #7f8f6f;
+  position: relative;
+  cursor: pointer;
+}
+
+.switch::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: #b7c9a9;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: 0.2s;
+}
+
+.switch.active::after {
+  left: 25px;
 }
 </style>
 </head>
@@ -186,7 +212,7 @@ body {
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings box">
+    <div class="settings box" id="openSettings">
       <img src="settings.png">
     </div>
   </div>
@@ -210,16 +236,13 @@ body {
 
   </div>
 
-  <!-- КНОПКИ -->
   <div class="bottom">
     <div class="menu-btn box" id="openUpgrade">
       <img src="upgrade.png">
     </div>
-
     <div class="menu-btn box">
       <img src="stats.png">
     </div>
-
     <div class="menu-btn box">
       <img src="trophy.png">
     </div>
@@ -227,7 +250,17 @@ body {
 
 </div>
 
-<!-- 🔥 МЕНЮ ПРОКАЧЕК -->
+<!-- НАСТРОЙКИ -->
+<div class="modal" id="settingsModal">
+  <div class="modal-box box">
+    <div style="display:flex;justify-content:space-between;">
+      <span>VIBRATION</span>
+      <div class="switch active" id="vibrationToggle"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ПРОКАЧКА -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
@@ -242,21 +275,37 @@ body {
   </div>
 </div>
 
+<audio id="clickSound" src="click.mp3"></audio>
+
 <script>
 let score = 0;
 let best = 0;
-
 let autoClicker = false;
+let vibration = true;
 
-/* клик */
+const coin = document.getElementById("coin");
+const clickSound = document.getElementById("clickSound");
+
+/* 🔥 АНИМАЦИЯ */
+function animateClick() {
+  coin.classList.add("click-anim");
+  setTimeout(() => coin.classList.remove("click-anim"), 80);
+}
+
+/* КЛИК */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
+
+  animateClick();
+
+  clickSound.currentTime = 0;
+  clickSound.play();
 
   score++;
   updateUI();
 });
 
-/* автокликер */
+/* АВТОКЛИКЕР */
 setInterval(() => {
   if (autoClicker) {
     score++;
@@ -264,7 +313,7 @@ setInterval(() => {
   }
 }, 1000);
 
-/* обновление */
+/* UI */
 function updateUI() {
   document.getElementById("score").innerText = score;
 
@@ -277,25 +326,30 @@ function updateUI() {
   document.getElementById("progress").style.width = progress + "%";
   document.getElementById("progressText").innerText = progress + " / 100";
 
-  /* открытие апгрейда */
-  const auto = document.getElementById("autoClicker");
-
   if (score >= 150) {
-    auto.classList.remove("locked");
+    document.getElementById("autoClicker").classList.remove("locked");
   }
 }
 
-/* открыть меню */
+/* НАСТРОЙКИ */
+document.getElementById("openSettings").onclick = () => {
+  document.getElementById("settingsModal").style.display = "flex";
+};
+
+document.getElementById("vibrationToggle").onclick = function() {
+  vibration = !vibration;
+  this.classList.toggle("active");
+};
+
+/* ПРОКАЧКА */
 document.getElementById("openUpgrade").onclick = () => {
   document.getElementById("upgradeModal").style.display = "flex";
 };
 
-/* закрыть */
 document.getElementById("closeUpgrade").onclick = () => {
   document.getElementById("upgradeModal").style.display = "none";
 };
 
-/* покупка */
 document.getElementById("autoClicker").onclick = () => {
   if (score >= 150 && !autoClicker) {
     score -= 150;
