@@ -36,15 +36,10 @@ body{
 }
 
 .top{display:flex;justify-content:space-between;align-items:center;}
-
 .label{font-size:10px;opacity:0.7;}
 .value{font-size:22px;margin-top:5px;}
 
-.settings{
-  width:45px;height:45px;
-  display:flex;justify-content:center;align-items:center;
-  cursor:pointer;
-}
+.settings{width:45px;height:45px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
 .settings img{width:62px;}
 
 .screen{
@@ -125,31 +120,23 @@ body{
   opacity:1;
 }
 
-/* ПОЛЗУНОК (ФИКС) */
-.range-wrapper{
-  position:relative;
-  height:14px;
-}
-
+/* ПОЛЗУНОК */
+.range-wrapper{position:relative;height:14px;}
 .range-fill{
-  position:absolute;
-  height:100%;
+  position:absolute;height:100%;
   background:#b7c9a9;
   border-radius:4px;
   width:100%;
-  pointer-events:none; /* 🔥 фикс */
+  pointer-events:none;
 }
-
 input[type=range]{
-  width:100%;
-  height:14px;
+  width:100%;height:14px;
   background:#111;
   border:2px solid #7f8f6f;
   border-radius:4px;
   position:relative;
   z-index:2;
 }
-
 input[type=range]::-webkit-slider-thumb{
   -webkit-appearance:none;
   width:18px;height:18px;
@@ -239,31 +226,36 @@ input[type=range]::-webkit-slider-thumb{
 <div class="modal" id="settingsModal">
   <div class="modal-box box">
     <div>VOLUME</div>
-
     <div class="range-wrapper">
       <div class="range-fill" id="volumeFill"></div>
       <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
     </div>
-
     <div id="closeSettings" style="cursor:pointer;text-align:center;">CLOSE</div>
   </div>
 </div>
 
-<!-- ПРОКАЧКА -->
+<!-- МАГАЗИН -->
 <div class="modal" id="upgradeModal">
   <div class="modal-box box">
 
+    <!-- АВТОКЛИКЕР -->
     <div id="autoClicker" class="upgrade-item locked">
       <div>
         AUTO CLICKER
-        <div id="autoLevel" style="font-size:10px; opacity:0.6;">LVL 0</div>
+        <div id="autoInfo" style="font-size:10px; opacity:0.6;">CPS: 0</div>
       </div>
-      <div class="switch" id="autoToggle"></div>
+      <div id="autoRight"></div>
     </div>
 
-    <div id="upgradeInfo" style="font-size:10px; opacity:0.6;"></div>
+    <!-- СИЛА КЛИКА -->
+    <div id="clickPower" class="upgrade-item locked">
+      <div>
+        CLICK POWER
+        <div id="clickInfo" style="font-size:10px; opacity:0.6;">+1</div>
+      </div>
+      <div id="clickRight"></div>
+    </div>
 
-    <div id="buyUpgrade" style="cursor:pointer;text-align:center;">BUY</div>
     <div id="closeUpgrade" style="cursor:pointer;text-align:center;">CLOSE</div>
 
   </div>
@@ -273,7 +265,9 @@ input[type=range]::-webkit-slider-thumb{
 
 <script>
 let score=0,best=0,volume=1;
+
 let autoLevel=0,autoActive=false;
+let clickPowerLevel=0,clickValue=1;
 
 const levels=[
 {price:150,cps:1},
@@ -283,8 +277,16 @@ const levels=[
 {price:5000,cps:40}
 ];
 
+const clickLevels=[
+{price:100,value:2},
+{price:300,value:5},
+{price:800,value:10},
+{price:2000,value:25}
+];
+
 const clickSound=document.getElementById("clickSound");
 
+/* КЛИК */
 clicker.addEventListener("pointerdown",(e)=>{
   e.preventDefault();
 
@@ -295,10 +297,11 @@ clicker.addEventListener("pointerdown",(e)=>{
   clickSound.volume=volume;
   clickSound.play();
 
-  score++;
+  score+=clickValue;
   updateUI();
 });
 
+/* АВТОКЛИК */
 setInterval(()=>{
   if(autoActive && autoLevel>0){
     score+=levels[autoLevel-1].cps;
@@ -306,6 +309,7 @@ setInterval(()=>{
   }
 },1000);
 
+/* UI */
 function updateUI(){
   scoreEl.innerText=score;
 
@@ -318,58 +322,90 @@ function updateUI(){
   progress.style.width=p+"%";
   progressText.innerText=p+" / 100";
 
-  autoLevelEl.innerText="LVL "+autoLevel;
-
   if(score>=150) autoClicker.classList.remove("locked");
+  if(score>=100) clickPower.classList.remove("locked");
 
-  updateUpgradeInfo();
+  updateShopUI();
 }
 
-function updateUpgradeInfo(){
-  if(autoLevel>=levels.length){
-    upgradeInfo.innerHTML="MAX LEVEL";
-    return;
+/* МАГАЗИН UI */
+function updateShopUI(){
+
+  /* автокликер */
+  if(autoLevel===0){
+    autoRight.innerHTML = levels[0].price;
+  }else{
+    autoRight.innerHTML = `<div class="switch ${autoActive?"active":""}" id="autoToggle"></div>`;
+    document.getElementById("autoToggle").onclick=(e)=>{
+      e.stopPropagation();
+      autoActive=!autoActive;
+      updateShopUI();
+    };
   }
-  let n=levels[autoLevel];
-  upgradeInfo.innerHTML=`<span style="opacity:0.6;">PRICE: ${n.price} | CPS: ${n.cps}</span>`;
+
+  autoInfo.innerText="CPS: "+(autoLevel>0?levels[autoLevel-1].cps:0);
+
+  /* сила клика */
+  if(clickPowerLevel===0){
+    clickRight.innerHTML = clickLevels[0].price;
+  }else if(clickPowerLevel<clickLevels.length){
+    clickRight.innerHTML = `<span id="upgradeClick" style="cursor:pointer;">UPGRADE</span>`;
+
+    document.getElementById("upgradeClick").onclick=(e)=>{
+      e.stopPropagation();
+      let lvl=clickLevels[clickPowerLevel];
+      if(score>=lvl.price){
+        score-=lvl.price;
+        clickPowerLevel++;
+        clickValue=lvl.value;
+        updateUI();
+      }
+    };
+
+  }else{
+    clickRight.innerHTML="MAX";
+  }
+
+  clickInfo.innerText="+"+clickValue;
 }
 
-buyUpgrade.onclick=()=>{
-  if(autoLevel>=levels.length) return;
-
-  let n=levels[autoLevel];
-  if(score>=n.price){
-    score-=n.price;
-    autoLevel++;
+/* ПОКУПКА */
+autoClicker.onclick=()=>{
+  if(autoLevel===0 && score>=levels[0].price){
+    score-=levels[0].price;
+    autoLevel=1;
     updateUI();
   }
 };
 
-autoToggle.onclick=(e)=>{
-  e.stopPropagation();
-  if(autoLevel===0) return;
-
-  autoActive=!autoActive;
-  autoToggle.classList.toggle("active");
+clickPower.onclick=()=>{
+  if(clickPowerLevel===0 && score>=clickLevels[0].price){
+    score-=clickLevels[0].price;
+    clickPowerLevel=1;
+    clickValue=clickLevels[0].value;
+    updateUI();
+  }
 };
 
+/* ГРОМКОСТЬ */
 volumeSlider.addEventListener("input",(e)=>{
   volume=parseFloat(e.target.value);
   volumeFill.style.width=(volume*100)+"%";
   clickSound.volume=volume;
 });
 
+/* МОДАЛКИ */
 openSettings.onclick=()=>settingsModal.classList.add("active");
 closeSettings.onclick=()=>settingsModal.classList.remove("active");
 
 openUpgrade.onclick=()=>upgradeModal.classList.add("active");
 closeUpgrade.onclick=()=>upgradeModal.classList.remove("active");
 
+/* ссылки */
 const scoreEl=document.getElementById("score");
 const bestEl=document.getElementById("best");
 const progress=document.getElementById("progress");
 const progressText=document.getElementById("progressText");
-const autoLevelEl=document.getElementById("autoLevel");
 
 Telegram.WebApp.expand();
 </script>
