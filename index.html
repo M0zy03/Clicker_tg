@@ -26,7 +26,6 @@ body {
   color: #b7c9a9;
 }
 
-/* РАМКИ */
 .box {
   border: 2px solid #7f8f6f;
   border-radius: 8px;
@@ -117,7 +116,6 @@ body {
   transform: scale(0.92);
 }
 
-/* +1 */
 .plus {
   position: absolute;
   font-size: 14px;
@@ -142,7 +140,7 @@ body {
 }
 .menu-btn img { width: 70%; }
 
-/* 🔥 МОДАЛКА */
+/* МОДАЛКА */
 #settingsModal {
   position: fixed;
   inset: 0;
@@ -190,7 +188,6 @@ body {
   left: 25px;
 }
 
-/* громкость */
 input[type=range] {
   width: 100%;
 }
@@ -249,18 +246,18 @@ input[type=range] {
 
 </div>
 
-<!-- 🔥 МЕНЮ НАСТРОЕК -->
+<!-- НАСТРОЙКИ -->
 <div id="settingsModal">
   <div class="modal-box box">
 
     <div class="toggle">
       <span>VIBRATION</span>
-      <div class="switch" id="vibrationToggle"></div>
+      <div class="switch active" id="vibrationToggle"></div>
     </div>
 
     <div>
       <div style="margin-bottom:10px;">VOLUME</div>
-      <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
     </div>
 
     <div class="close-btn" id="closeSettings">CLOSE</div>
@@ -268,21 +265,28 @@ input[type=range] {
   </div>
 </div>
 
+<!-- 🔊 ЗВУК -->
+<audio id="clickSound" src="click.mp3"></audio>
+
 <script>
 let score = 0;
 let best = 0;
+
 let vibration = true;
 let volume = 1;
 
 const scoreEl = document.getElementById("score");
 const bestEl = document.getElementById("best");
+const clickSound = document.getElementById("clickSound");
 
+/* ПРОГРЕСС */
 function updateProgress() {
   let progress = score % 100;
   document.getElementById("progress").style.width = progress + "%";
   document.getElementById("progressText").innerText = progress + " / 100";
 }
 
+/* +1 */
 function createPlus(x, y) {
   const el = document.createElement("div");
   el.className = "plus";
@@ -293,6 +297,7 @@ function createPlus(x, y) {
   setTimeout(() => el.remove(), 600);
 }
 
+/* КЛИК */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
@@ -304,15 +309,21 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
     bestEl.innerText = best;
   }
 
+  /* 🔥 ВИБРАЦИЯ */
   if (vibration && navigator.vibrate) {
-    navigator.vibrate(10);
+    navigator.vibrate(15);
   }
+
+  /* 🔥 ЗВУК */
+  clickSound.currentTime = 0;
+  clickSound.volume = volume;
+  clickSound.play();
 
   updateProgress();
   createPlus(e.clientX, e.clientY);
 });
 
-/* 🔥 НАСТРОЙКИ */
+/* НАСТРОЙКИ */
 const modal = document.getElementById("settingsModal");
 
 document.getElementById("openSettings").onclick = () => {
@@ -333,7 +344,7 @@ toggle.onclick = () => {
 
 /* громкость */
 document.getElementById("volume").oninput = (e) => {
-  volume = e.target.value;
+  volume = parseFloat(e.target.value);
 };
 
 Telegram.WebApp.expand();
