@@ -113,6 +113,7 @@ body {
   pointer-events: none;
 }
 
+/* +1 */
 .plus {
   position: absolute;
   font-size: 14px;
@@ -123,7 +124,7 @@ body {
   100% { opacity: 0; transform: translateY(-40px); }
 }
 
-/* 🔥 НИЖНИЕ КНОПКИ ВЕРНУЛ */
+/* НИЗ */
 .bottom {
   display: flex;
   gap: 10px;
@@ -135,11 +136,12 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 .menu-btn img { width: 70%; }
 
-/* настройки */
-#settingsModal {
+/* МОДАЛКИ */
+.modal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.85);
@@ -149,52 +151,23 @@ body {
 }
 
 .modal-box {
-  width: 300px;
+  width: 320px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.switch {
-  width: 50px;
-  height: 25px;
+/* КНОПКА АПГРЕЙДА */
+.upgrade-item {
   border: 2px solid #7f8f6f;
-  position: relative;
+  padding: 15px;
   cursor: pointer;
 }
 
-.switch::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: 0.2s;
+.locked {
+  opacity: 0.4;
 }
-
-.switch.active::after {
-  left: 25px;
-}
-
-input[type=range] {
-  width: 100%;
-  height: 8px;
-  background: #111;
-  border: 2px solid #7f8f6f;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  background: #b7c9a9;
-  border: 2px solid #7f8f6f;
-  margin-top: -6px;
-}
-
 </style>
 </head>
 
@@ -213,7 +186,7 @@ input[type=range]::-webkit-slider-thumb {
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings box" id="openSettings">
+    <div class="settings box">
       <img src="settings.png">
     </div>
   </div>
@@ -237,72 +210,62 @@ input[type=range]::-webkit-slider-thumb {
 
   </div>
 
-  <!-- 🔥 КНОПКИ СНИЗУ -->
+  <!-- КНОПКИ -->
   <div class="bottom">
-    <div class="menu-btn box"><img src="upgrade.png"></div>
-    <div class="menu-btn box"><img src="stats.png"></div>
-    <div class="menu-btn box"><img src="trophy.png"></div>
-  </div>
-
-</div>
-
-<!-- настройки -->
-<div id="settingsModal">
-  <div class="modal-box box">
-
-    <div style="display:flex;justify-content:space-between;">
-      <span>VIBRATION</span>
-      <div class="switch active" id="vibrationToggle"></div>
+    <div class="menu-btn box" id="openUpgrade">
+      <img src="upgrade.png">
     </div>
 
-    <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+    <div class="menu-btn box">
+      <img src="stats.png">
+    </div>
+
+    <div class="menu-btn box">
+      <img src="trophy.png">
+    </div>
+  </div>
+
+</div>
+
+<!-- 🔥 МЕНЮ ПРОКАЧЕК -->
+<div class="modal" id="upgradeModal">
+  <div class="modal-box box">
+
+    <div id="autoClicker" class="upgrade-item locked">
+      AUTO CLICKER (150)
+    </div>
+
+    <div style="text-align:center;cursor:pointer;" id="closeUpgrade">
+      CLOSE
+    </div>
 
   </div>
 </div>
-
-<audio id="clickSound" src="click.mp3"></audio>
 
 <script>
 let score = 0;
 let best = 0;
-let vibration = true;
-let volume = 1;
 
-const coin = document.getElementById("coin");
-const clickSound = document.getElementById("clickSound");
+let autoClicker = false;
 
-/* 🔥 АНИМАЦИЯ */
-function animateClick() {
-  coin.style.transform = "scale(0.85)";
-  setTimeout(() => coin.style.transform = "scale(1)", 80);
-}
-
-/* 🔥 МАКСИМАЛЬНАЯ ВИБРАЦИЯ */
-function doVibrate() {
-  if (!vibration) return;
-
-  try {
-    Telegram.WebApp.HapticFeedback.impactOccurred("heavy");
-    Telegram.WebApp.HapticFeedback.notificationOccurred("success");
-  } catch(e) {}
-
-  if (navigator.vibrate) {
-    navigator.vibrate([20, 10, 20]);
-  }
-}
-
-/* КЛИК */
+/* клик */
 document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   e.preventDefault();
 
-  animateClick();
-  doVibrate();
-
-  clickSound.currentTime = 0;
-  clickSound.volume = volume;
-  clickSound.play();
-
   score++;
+  updateUI();
+});
+
+/* автокликер */
+setInterval(() => {
+  if (autoClicker) {
+    score++;
+    updateUI();
+  }
+}, 1000);
+
+/* обновление */
+function updateUI() {
   document.getElementById("score").innerText = score;
 
   if (score > best) {
@@ -313,20 +276,32 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   let progress = score % 100;
   document.getElementById("progress").style.width = progress + "%";
   document.getElementById("progressText").innerText = progress + " / 100";
-});
 
-/* настройки */
-document.getElementById("openSettings").onclick = () => {
-  document.getElementById("settingsModal").style.display = "flex";
+  /* открытие апгрейда */
+  const auto = document.getElementById("autoClicker");
+
+  if (score >= 150) {
+    auto.classList.remove("locked");
+  }
+}
+
+/* открыть меню */
+document.getElementById("openUpgrade").onclick = () => {
+  document.getElementById("upgradeModal").style.display = "flex";
 };
 
-document.getElementById("vibrationToggle").onclick = function() {
-  vibration = !vibration;
-  this.classList.toggle("active");
+/* закрыть */
+document.getElementById("closeUpgrade").onclick = () => {
+  document.getElementById("upgradeModal").style.display = "none";
 };
 
-document.getElementById("volume").oninput = (e) => {
-  volume = parseFloat(e.target.value);
+/* покупка */
+document.getElementById("autoClicker").onclick = () => {
+  if (score >= 150 && !autoClicker) {
+    score -= 150;
+    autoClicker = true;
+    document.getElementById("autoClicker").innerText = "AUTO CLICKER (BOUGHT)";
+  }
 };
 
 Telegram.WebApp.expand();
