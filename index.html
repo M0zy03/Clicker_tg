@@ -26,18 +26,13 @@ body {
   color: #b7c9a9;
 }
 
-/* 🔥 ИДЕАЛЬНЫЕ РАМКИ КАК НА СКРИНЕ */
+/* РАМКИ */
 .box {
   border: 2px solid #7f8f6f;
-
-  /* 👇 ВОТ ОНО — минимальное скругление */
   border-radius: 8px;
-
-  /* 👇 внутренняя линия */
   box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
 }
 
-/* ОСНОВА */
 #app {
   width: 420px;
   height: 90vh;
@@ -47,48 +42,34 @@ body {
   gap: 15px;
 }
 
-/* ВЕРХ */
 .top {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.label {
-  font-size: 10px;
-  opacity: 0.7;
-}
+.label { font-size: 10px; opacity: 0.7; }
+.value { font-size: 22px; margin-top: 5px; }
 
-.value {
-  font-size: 22px;
-  margin-top: 5px;
-}
-
-/* ⚙️ */
 .settings {
   width: 45px;
   height: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
+.settings img { width: 62px; }
 
-.settings img {
-  width: 62px;
-}
-
-/* ЭКРАН */
 .screen {
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-
   background: url("bg_main.png") center/cover no-repeat;
 }
 
-/* ПРОГРЕСС */
 .progress-row {
   display: flex;
   align-items: center;
@@ -99,9 +80,7 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
-
-  border-radius: 6px; /* чуть меньше чем у блоков */
-
+  border-radius: 6px;
   overflow: hidden;
 }
 
@@ -111,11 +90,8 @@ body {
   background: #b7c9a9;
 }
 
-.progress-text {
-  font-size: 12px;
-}
+.progress-text { font-size: 12px; }
 
-/* ЦЕНТР */
 .center {
   flex: 1;
   display: flex;
@@ -123,7 +99,6 @@ body {
   align-items: center;
 }
 
-/* КЛИКЕР */
 #clicker {
   width: 220px;
   height: 220px;
@@ -133,10 +108,8 @@ body {
   cursor: pointer;
 }
 
-/* 🪙 МОНЕТА */
 #coin {
-  width: 130%; /* 👈 меняешь тут */
-  object-fit: contain;
+  width: 130%;
   pointer-events: none;
 }
 
@@ -148,16 +121,13 @@ body {
 .plus {
   position: absolute;
   font-size: 14px;
-  color: #b7c9a9;
   animation: floatUp 0.6s forwards;
 }
-
 @keyframes floatUp {
   0% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-40px); }
 }
 
-/* НИЗ */
 .bottom {
   display: flex;
   gap: 10px;
@@ -169,12 +139,65 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+}
+.menu-btn img { width: 70%; }
+
+/* 🔥 МОДАЛКА */
+#settingsModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
 }
 
-/* 🔘 КНОПКИ */
-.menu-btn img {
-  width: 70%; /* 👈 меняешь тут */
+.modal-box {
+  width: 300px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* переключатель */
+.toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.switch {
+  width: 50px;
+  height: 25px;
+  border: 2px solid #7f8f6f;
+  position: relative;
+  cursor: pointer;
+}
+
+.switch::after {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: #b7c9a9;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: 0.2s;
+}
+
+.switch.active::after {
+  left: 25px;
+}
+
+/* громкость */
+input[type=range] {
+  width: 100%;
+}
+
+.close-btn {
+  text-align: center;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -183,9 +206,7 @@ body {
 
 <div id="app" class="box">
 
-  <!-- ВЕРХ -->
   <div class="top">
-
     <div>
       <div class="label">SCORE</div>
       <div class="value" id="score">0</div>
@@ -196,13 +217,11 @@ body {
       <div class="value" id="best">0</div>
     </div>
 
-    <div class="settings box">
+    <div class="settings box" id="openSettings">
       <img src="settings.png">
     </div>
-
   </div>
 
-  <!-- ЭКРАН -->
   <div class="screen box">
 
     <div class="label">NEXT BACKGROUND</div>
@@ -222,47 +241,54 @@ body {
 
   </div>
 
-  <!-- НИЗ -->
   <div class="bottom">
-
-    <div class="menu-btn box">
-      <img src="upgrade.png">
-    </div>
-
-    <div class="menu-btn box">
-      <img src="stats.png">
-    </div>
-
-    <div class="menu-btn box">
-      <img src="trophy.png">
-    </div>
-
+    <div class="menu-btn box"><img src="upgrade.png"></div>
+    <div class="menu-btn box"><img src="stats.png"></div>
+    <div class="menu-btn box"><img src="trophy.png"></div>
   </div>
 
+</div>
+
+<!-- 🔥 МЕНЮ НАСТРОЕК -->
+<div id="settingsModal">
+  <div class="modal-box box">
+
+    <div class="toggle">
+      <span>VIBRATION</span>
+      <div class="switch" id="vibrationToggle"></div>
+    </div>
+
+    <div>
+      <div style="margin-bottom:10px;">VOLUME</div>
+      <input type="range" id="volume" min="0" max="1" step="0.1" value="1">
+    </div>
+
+    <div class="close-btn" id="closeSettings">CLOSE</div>
+
+  </div>
 </div>
 
 <script>
 let score = 0;
 let best = 0;
+let vibration = true;
+let volume = 1;
 
 const scoreEl = document.getElementById("score");
 const bestEl = document.getElementById("best");
-const progressText = document.getElementById("progressText");
 
 function updateProgress() {
   let progress = score % 100;
   document.getElementById("progress").style.width = progress + "%";
-  progressText.innerText = progress + " / 100";
+  document.getElementById("progressText").innerText = progress + " / 100";
 }
 
 function createPlus(x, y) {
   const el = document.createElement("div");
   el.className = "plus";
   el.innerText = "+1";
-
   el.style.left = x + "px";
   el.style.top = y + "px";
-
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 600);
 }
@@ -278,9 +304,37 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
     bestEl.innerText = best;
   }
 
+  if (vibration && navigator.vibrate) {
+    navigator.vibrate(10);
+  }
+
   updateProgress();
   createPlus(e.clientX, e.clientY);
 });
+
+/* 🔥 НАСТРОЙКИ */
+const modal = document.getElementById("settingsModal");
+
+document.getElementById("openSettings").onclick = () => {
+  modal.style.display = "flex";
+};
+
+document.getElementById("closeSettings").onclick = () => {
+  modal.style.display = "none";
+};
+
+/* переключатель */
+const toggle = document.getElementById("vibrationToggle");
+
+toggle.onclick = () => {
+  vibration = !vibration;
+  toggle.classList.toggle("active");
+};
+
+/* громкость */
+document.getElementById("volume").oninput = (e) => {
+  volume = e.target.value;
+};
 
 Telegram.WebApp.expand();
 </script>
