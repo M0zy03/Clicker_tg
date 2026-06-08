@@ -148,6 +148,17 @@ body {
   gap: 20px;
 }
 
+/* 🔥 АПГРЕЙД БЛОК */
+.upgrade-item {
+  border: 2px solid #7f8f6f;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.locked { opacity: 0.4; }
+
 /* ПЕРЕКЛЮЧАТЕЛЬ */
 .switch {
   width: 50px;
@@ -172,30 +183,38 @@ body {
   left: 25px;
 }
 
-/* ПОЛЗУНОК */
+/* 🔥 КРАСИВЫЙ ПОЛЗУНОК */
+.range-wrapper {
+  position: relative;
+}
+
+.range-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #b7c9a9;
+  pointer-events: none;
+}
+
 input[type=range] {
+  -webkit-appearance: none;
   width: 100%;
-  height: 8px;
+  height: 10px;
   background: #111;
   border: 2px solid #7f8f6f;
+  position: relative;
 }
 
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   background: #b7c9a9;
   border: 2px solid #7f8f6f;
+  cursor: pointer;
   margin-top: -6px;
 }
-
-/* АПГРЕЙД */
-.upgrade-item {
-  border: 2px solid #7f8f6f;
-  padding: 15px;
-}
-
-.locked { opacity: 0.4; }
 
 </style>
 </head>
@@ -251,14 +270,13 @@ input[type=range]::-webkit-slider-thumb {
 <div class="modal" id="settingsModal">
   <div class="modal-box box">
 
-    <div style="display:flex;justify-content:space-between;">
-      <span>VIBRATION</span>
-      <div class="switch active" id="vibrationToggle"></div>
-    </div>
-
     <div>
       <div style="margin-bottom:10px;">VOLUME</div>
-      <input type="range" id="volume" min="0" max="1" step="0.05" value="1">
+
+      <div class="range-wrapper">
+        <div class="range-fill" id="volumeFill"></div>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+      </div>
     </div>
 
     <div id="closeSettings" style="text-align:center;cursor:pointer;">
@@ -273,11 +291,7 @@ input[type=range]::-webkit-slider-thumb {
   <div class="modal-box box">
 
     <div id="autoClicker" class="upgrade-item locked">
-      AUTO CLICKER (150)
-    </div>
-
-    <div style="display:flex;justify-content:space-between;">
-      <span>ACTIVE</span>
+      <span>AUTO CLICKER (150)</span>
       <div class="switch" id="autoToggle"></div>
     </div>
 
@@ -296,8 +310,6 @@ let best = 0;
 
 let autoClickerBought = false;
 let autoClickerActive = false;
-
-let vibration = true;
 let volume = 1;
 
 const coin = document.getElementById("coin");
@@ -323,7 +335,7 @@ document.getElementById("clicker").addEventListener("pointerdown", (e) => {
   updateUI();
 });
 
-/* автокликер */
+/* автоклик */
 setInterval(() => {
   if (autoClickerActive) {
     score++;
@@ -349,42 +361,39 @@ function updateUI() {
   }
 }
 
-/* НАСТРОЙКИ */
-document.getElementById("openSettings").onclick = () => {
-  settingsModal.style.display = "flex";
-};
+/* громкость визуал */
+const volumeInput = document.getElementById("volume");
+const volumeFill = document.getElementById("volumeFill");
 
-document.getElementById("closeSettings").onclick = () => {
-  settingsModal.style.display = "none";
-};
+function updateVolumeUI() {
+  volumeFill.style.width = (volume * 100) + "%";
+}
 
-document.getElementById("vibrationToggle").onclick = function() {
-  vibration = !vibration;
-  this.classList.toggle("active");
-};
-
-document.getElementById("volume").oninput = (e) => {
+volumeInput.oninput = (e) => {
   volume = parseFloat(e.target.value);
+  updateVolumeUI();
 };
 
-/* ПРОКАЧКА */
-document.getElementById("openUpgrade").onclick = () => {
-  upgradeModal.style.display = "flex";
-};
+updateVolumeUI();
 
-document.getElementById("closeUpgrade").onclick = () => {
-  upgradeModal.style.display = "none";
-};
+/* настройки */
+openSettings.onclick = () => settingsModal.style.display = "flex";
+closeSettings.onclick = () => settingsModal.style.display = "none";
 
-document.getElementById("autoClicker").onclick = () => {
+/* апгрейд */
+openUpgrade.onclick = () => upgradeModal.style.display = "flex";
+closeUpgrade.onclick = () => upgradeModal.style.display = "none";
+
+autoClicker.onclick = () => {
   if (score >= 150 && !autoClickerBought) {
     score -= 150;
     autoClickerBought = true;
-    document.getElementById("autoClicker").innerText = "AUTO CLICKER (BOUGHT)";
+    autoClicker.querySelector("span").innerText = "AUTO CLICKER";
   }
 };
 
-document.getElementById("autoToggle").onclick = function() {
+autoToggle.onclick = function(e) {
+  e.stopPropagation();
   if (!autoClickerBought) return;
 
   autoClickerActive = !autoClickerActive;
