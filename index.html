@@ -26,79 +26,25 @@ body {
   color: #b7c9a9;
 }
 
-/* ПИКСЕЛЬНОЕ СКРУГЛЕНИЕ УГЛОВ */
+/* 🔥 ИДЕАЛЬНЫЕ РАМКИ КАК НА СКРИНЕ */
 .box {
-  --border: 2px;
-  --step: 5px;
-  --corner: 15px;
-  --line: #7f8f6f;
+  border: 2px solid #7f8f6f;
 
-  position: relative;
-  border: none;
-  clip-path: polygon(
-    0 var(--corner),
-    var(--step) var(--corner),
-    var(--step) calc(var(--corner) - var(--step)),
-    calc(var(--corner) - var(--step)) calc(var(--corner) - var(--step)),
-    calc(var(--corner) - var(--step)) var(--step),
-    var(--corner) var(--step),
-    var(--corner) 0,
+  /* 👇 ВОТ ОНО — минимальное скругление */
+  border-radius: 8px;
 
-    calc(100% - var(--corner)) 0,
-    calc(100% - var(--corner)) var(--step),
-    calc(100% - var(--corner) + var(--step)) var(--step),
-    calc(100% - var(--corner) + var(--step)) calc(var(--corner) - var(--step)),
-    calc(100% - var(--step)) calc(var(--corner) - var(--step)),
-    calc(100% - var(--step)) var(--corner),
-    100% var(--corner),
-
-    100% calc(100% - var(--corner)),
-    calc(100% - var(--step)) calc(100% - var(--corner)),
-    calc(100% - var(--step)) calc(100% - var(--corner) + var(--step)),
-    calc(100% - var(--corner) + var(--step)) calc(100% - var(--corner) + var(--step)),
-    calc(100% - var(--corner) + var(--step)) calc(100% - var(--step)),
-    calc(100% - var(--corner)) calc(100% - var(--step)),
-    calc(100% - var(--corner)) 100%,
-
-    var(--corner) 100%,
-    var(--corner) calc(100% - var(--step)),
-    calc(var(--corner) - var(--step)) calc(100% - var(--step)),
-    calc(var(--corner) - var(--step)) calc(100% - var(--corner) + var(--step)),
-    var(--step) calc(100% - var(--corner) + var(--step)),
-    var(--step) calc(100% - var(--corner)),
-    0 calc(100% - var(--corner))
-  );
-}
-
-.box::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background: var(--line);
-  clip-path: inherit;
-  padding: var(--border);
-
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
+  /* 👇 внутренняя линия */
+  box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
 }
 
 /* ОСНОВА */
 #app {
-  --step: 5px;
-  --corner: 18px;
-
   width: 420px;
   height: 90vh;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
-  background: #000;
 }
 
 /* ВЕРХ */
@@ -118,11 +64,8 @@ body {
   margin-top: 5px;
 }
 
-/* НАСТРОЙКИ */
+/* ⚙️ */
 .settings {
-  --step: 4px;
-  --corner: 12px;
-
   width: 45px;
   height: 45px;
   display: flex;
@@ -136,14 +79,12 @@ body {
 
 /* ЭКРАН */
 .screen {
-  --step: 5px;
-  --corner: 16px;
-
   flex: 1;
   padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 15px;
+
   background: url("bg_main.png") center/cover no-repeat;
 }
 
@@ -158,6 +99,9 @@ body {
   flex: 1;
   height: 14px;
   border: 2px solid #7f8f6f;
+
+  border-radius: 6px; /* чуть меньше чем у блоков */
+
   overflow: hidden;
 }
 
@@ -189,9 +133,9 @@ body {
   cursor: pointer;
 }
 
-/* МОНЕТА */
+/* 🪙 МОНЕТА */
 #coin {
-  width: 130%;
+  width: 130%; /* 👈 меняешь тут */
   object-fit: contain;
   pointer-events: none;
 }
@@ -209,15 +153,8 @@ body {
 }
 
 @keyframes floatUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40px); }
 }
 
 /* НИЗ */
@@ -227,9 +164,6 @@ body {
 }
 
 .menu-btn {
-  --step: 4px;
-  --corner: 12px;
-
   flex: 1;
   height: 70px;
   display: flex;
@@ -238,8 +172,9 @@ body {
   overflow: hidden;
 }
 
+/* 🔘 КНОПКИ */
 .menu-btn img {
-  width: 70%;
+  width: 70%; /* 👈 меняешь тут */
 }
 </style>
 </head>
@@ -248,6 +183,7 @@ body {
 
 <div id="app" class="box">
 
+  <!-- ВЕРХ -->
   <div class="top">
 
     <div>
@@ -266,6 +202,7 @@ body {
 
   </div>
 
+  <!-- ЭКРАН -->
   <div class="screen box">
 
     <div class="label">NEXT BACKGROUND</div>
@@ -285,6 +222,7 @@ body {
 
   </div>
 
+  <!-- НИЗ -->
   <div class="bottom">
 
     <div class="menu-btn box">
