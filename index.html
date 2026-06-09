@@ -9,225 +9,199 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
-  background: #000;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Press Start 2P', monospace;
-  color: #b7c9a9;
+  background:#000;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:'Press Start 2P', monospace;
+  color:#b7c9a9;
 }
 
 .box {
-  border: 2px solid #7f8f6f;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
+  border:2px solid #7f8f6f;
+  border-radius:8px;
+  box-shadow: inset 0 0 0 1px rgba(183,201,169,0.15);
 }
 
 #app {
-  width: 420px;
-  height: 90vh;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  width:420px;
+  height:90vh;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.label { font-size: 10px; opacity: 0.7; }
-.value { font-size: 22px; margin-top: 5px; }
+.top { display:flex; justify-content:space-between; align-items:center; }
+.label { font-size:10px; opacity:0.7; }
+.value { font-size:22px; margin-top:5px; }
 
 .settings {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  width:45px; height:45px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
 }
-.settings img { width: 62px; }
+.settings img { width:62px; }
 
 .screen {
-  flex: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: url("bg_main.png") center/cover no-repeat;
+  flex:1;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  background:url("bg_main.png") center/cover no-repeat;
 }
 
-.progress-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.progress-row { display:flex; align-items:center; gap:10px; }
 
 .progress {
-  flex: 1;
-  height: 14px;
-  border: 2px solid #7f8f6f;
-  border-radius: 6px;
-  overflow: hidden;
+  flex:1;
+  height:14px;
+  border:2px solid #7f8f6f;
+  border-radius:6px;
+  overflow:hidden;
 }
 
 .progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #b7c9a9;
+  height:100%;
+  width:0%;
+  background:#b7c9a9;
 }
 
-.progress-text { font-size: 12px; }
+.progress-text { font-size:12px; }
 
 .center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 #clicker {
-  width: 220px;
-  height: 220px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  width:220px;
+  height:220px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
 }
 
 #coin {
-  width: 130%;
-  transition: transform 0.08s ease;
-  pointer-events: none;
+  width:130%;
+  transition:transform 0.08s;
+  pointer-events:none;
 }
 
-.click-anim { transform: scale(0.85); }
+.click-anim { transform:scale(0.85); }
 
-.bottom {
-  display: flex;
-  gap: 10px;
-}
+.bottom { display:flex; gap:10px; }
 
 .menu-btn {
-  flex: 1;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  flex:1;
+  height:70px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
 }
-.menu-btn img { width: 70%; }
+.menu-btn img { width:70%; }
 
 /* МОДАЛКИ */
 .modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.85);
+  display:none;
+  justify-content:center;
+  align-items:center;
 }
 
 .modal-box {
-  width: 340px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width:340px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
 }
 
+/* ПРОКАЧКА */
 .upgrade-card {
-  border: 2px solid #7f8f6f;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  border:2px solid #7f8f6f;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 
 .up-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
 }
 
-.up-sub {
-  font-size: 10px;
-  opacity: 0.6;
-}
+.up-sub { font-size:10px; opacity:0.6; }
 
 .up-btn {
-  border: 2px solid #7f8f6f;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
+  border:2px solid #7f8f6f;
+  padding:8px;
+  text-align:center;
+  cursor:pointer;
 }
 
 .switch {
-  width: 50px;
-  height: 25px;
-  border: 2px solid #7f8f6f;
-  position: relative;
+  width:50px;
+  height:25px;
+  border:2px solid #7f8f6f;
+  position:relative;
 }
 
 .switch::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: 0.2s;
+  content:"";
+  width:20px;
+  height:20px;
+  background:#b7c9a9;
+  position:absolute;
+  top:1px;
+  left:1px;
+  transition:0.2s;
 }
 
-.switch.active::after {
-  left: 25px;
-}
+.switch.active::after { left:25px; }
 
-/* 🔥 ПОЛЗУНОК */
-.range-wrapper {
-  position: relative;
-}
+/* ПОЛЗУНОК */
+.range-wrapper { position:relative; }
 
 .range-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: #b7c9a9;
-  pointer-events: none;
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  background:#b7c9a9;
+  pointer-events:none;
 }
 
 input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  height: 10px;
-  background: #111;
-  border: 2px solid #7f8f6f;
-  position: relative;
-  z-index: 2;
+  -webkit-appearance:none;
+  width:100%;
+  height:10px;
+  background:#111;
+  border:2px solid #7f8f6f;
+  position:relative;
+  z-index:2;
 }
 
 input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  border: 2px solid #7f8f6f;
-  cursor: pointer;
-  margin-top: -6px;
+  -webkit-appearance:none;
+  width:20px;
+  height:20px;
+  background:#b7c9a9;
+  border:2px solid #7f8f6f;
+  cursor:pointer;
+  margin-top:-6px;
 }
 </style>
 </head>
@@ -253,7 +227,6 @@ input[type=range]::-webkit-slider-thumb {
   </div>
 
   <div class="screen box">
-
     <div class="label">NEXT BACKGROUND</div>
 
     <div class="progress-row">
@@ -268,7 +241,6 @@ input[type=range]::-webkit-slider-thumb {
         <img src="button.png" id="coin">
       </div>
     </div>
-
   </div>
 
   <div class="bottom">
@@ -291,9 +263,35 @@ input[type=range]::-webkit-slider-thumb {
       </div>
     </div>
 
-    <div id="closeSettings" style="text-align:center;cursor:pointer;">
-      CLOSE
+    <div id="closeSettings" style="text-align:center;cursor:pointer;">CLOSE</div>
+
+  </div>
+</div>
+
+<!-- ПРОКАЧКА -->
+<div class="modal" id="upgradeModal">
+  <div class="modal-box box">
+
+    <div class="upgrade-card">
+      <div class="up-header">
+        <span>AUTO CLICKER</span>
+        <span id="autoLvl">LVL 0</span>
+      </div>
+      <div class="up-sub" id="autoPower">+0 CPS</div>
+      <div class="up-btn" id="autoBuy">BUY (150)</div>
+      <div class="switch" id="autoToggle" style="display:none;"></div>
     </div>
+
+    <div class="upgrade-card">
+      <div class="up-header">
+        <span>CLICK POWER</span>
+        <span id="powerLvl">LVL 1</span>
+      </div>
+      <div class="up-sub" id="powerValue">+1 / click</div>
+      <div class="up-btn" id="powerBuy">BUY (150)</div>
+    </div>
+
+    <div id="closeUpgrade" style="text-align:center;cursor:pointer;">CLOSE</div>
 
   </div>
 </div>
@@ -301,9 +299,11 @@ input[type=range]::-webkit-slider-thumb {
 <audio id="clickSound" src="click.mp3"></audio>
 
 <script>
-let score = 0;
-let best = 0;
-let volume = 1;
+let score = 0, best = 0;
+let volumeVal = 1;
+let clickPower = 1;
+let autoLevel = 0;
+let autoActive = false;
 
 const scoreEl = document.getElementById("score");
 const bestEl = document.getElementById("best");
@@ -323,18 +323,26 @@ clicker.onclick = () => {
   setTimeout(()=>coin.classList.remove("click-anim"),80);
 
   clickSound.currentTime = 0;
-  clickSound.volume = volume;
+  clickSound.volume = volumeVal;
   clickSound.play();
 
-  score++;
+  score += clickPower;
   updateUI();
 };
+
+/* АВТОКЛИК */
+setInterval(()=>{
+  if(autoActive){
+    score += autoLevel;
+    updateUI();
+  }
+},1000);
 
 /* UI */
 function updateUI(){
   scoreEl.innerText = score;
 
-  if(score > best){
+  if(score>best){
     best = score;
     bestEl.innerText = best;
   }
@@ -342,20 +350,54 @@ function updateUI(){
   let p = score % 100;
   progressEl.style.width = p + "%";
   progressText.innerText = p + " / 100";
+
+  autoLvl.innerText = "LVL " + autoLevel;
+  autoPower.innerText = "+" + autoLevel + " CPS";
+
+  powerLvl.innerText = "LVL " + clickPower;
+  powerValue.innerText = "+" + clickPower + " / click";
 }
 
+/* ПРОКАЧКА */
+autoBuy.onclick = ()=>{
+  let price = 150*(autoLevel+1);
+  if(score>=price){
+    score-=price;
+    autoLevel++;
+    autoBuy.innerText="UPGRADE ("+(150*(autoLevel+1))+")";
+    autoToggle.style.display="block";
+    updateUI();
+  }
+};
+
+autoToggle.onclick = ()=>{
+  autoActive=!autoActive;
+  autoToggle.classList.toggle("active");
+};
+
+powerBuy.onclick = ()=>{
+  let price = 150*clickPower;
+  if(score>=price){
+    score-=price;
+    clickPower++;
+    powerBuy.innerText="UPGRADE ("+(150*clickPower)+")";
+    updateUI();
+  }
+};
+
 /* ГРОМКОСТЬ */
-volumeInput.addEventListener("input", (e)=>{
-  volume = parseFloat(e.target.value);
-  volumeFill.style.width = (volume * 100) + "%";
+volumeInput.addEventListener("input",(e)=>{
+  volumeVal=parseFloat(e.target.value);
+  volumeFill.style.width=(volumeVal*100)+"%";
 });
+volumeFill.style.width="100%";
 
-/* ИНИЦИАЛИЗАЦИЯ */
-volumeFill.style.width = "100%";
+/* МОДАЛКИ */
+openSettings.onclick=()=>settingsModal.style.display="flex";
+closeSettings.onclick=()=>settingsModal.style.display="none";
 
-/* МОДАЛКА */
-openSettings.onclick = () => settingsModal.style.display = "flex";
-closeSettings.onclick = () => settingsModal.style.display = "none";
+openUpgrade.onclick=()=>upgradeModal.style.display="flex";
+closeUpgrade.onclick=()=>upgradeModal.style.display="none";
 
 Telegram.WebApp.expand();
 </script>
