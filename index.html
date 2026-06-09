@@ -2,183 +2,58 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  background:#000;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:'Press Start 2P', monospace;
-  color:#b7c9a9;
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+background:#000;height:100vh;display:flex;justify-content:center;align-items:center;
+font-family:'Press Start 2P';color:#b7c9a9;
 }
+.box{border:2px solid #7f8f6f;border-radius:8px;box-shadow: inset 0 0 0 1px rgba(183,201,169,0.15);}
+#app{width:420px;height:90vh;padding:15px;display:flex;flex-direction:column;gap:15px;}
+.top{display:flex;justify-content:space-between;align-items:center;}
+.label{font-size:10px;opacity:.7;}
+.value{font-size:22px;margin-top:5px;}
+.settings{width:45px;height:45px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.settings img{width:62px;}
 
-.box {
-  border:2px solid #7f8f6f;
-  border-radius:8px;
-  box-shadow: inset 0 0 0 1px rgba(183,201,169,0.15);
+.screen{flex:1;padding:15px;display:flex;flex-direction:column;gap:15px;background:url("bg_main.png") center/cover;}
+.progress-row{display:flex;gap:10px;align-items:center;}
+.progress{flex:1;height:14px;border:2px solid #7f8f6f;border-radius:6px;overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:#b7c9a9;}
+.progress-text{font-size:12px;}
+
+.center{flex:1;display:flex;justify-content:center;align-items:center;}
+#clicker{width:220px;height:220px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+#coin{width:130%;transition:.08s;}
+.click-anim{transform:scale(.85);}
+
+.bottom{display:flex;gap:10px;}
+.menu-btn{flex:1;height:70px;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.menu-btn img{width:70%;}
+
+/* модалки */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;justify-content:center;align-items:center;
+opacity:0;pointer-events:none;transition:.2s;}
+.modal.active{opacity:1;pointer-events:auto;}
+.modal-box{width:340px;padding:20px;display:flex;flex-direction:column;gap:20px;
+transform:scale(.9);transition:.2s;}
+.modal.active .modal-box{transform:scale(1);}
+
+/* достижение */
+.ach-card{border:2px solid #7f8f6f;padding:15px;display:flex;justify-content:space-between;align-items:center;}
+.btn{border:2px solid #7f8f6f;padding:6px 10px;cursor:pointer;}
+
+/* popup */
+.popup{
+position:fixed;top:20%;left:50%;transform:translateX(-50%) scale(.7);
+border:2px solid #7f8f6f;padding:15px;background:#000;opacity:0;transition:.25s;
 }
-
-#app {
-  width:420px;
-  height:90vh;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-}
-
-.top { display:flex; justify-content:space-between; align-items:center; }
-.label { font-size:10px; opacity:0.7; }
-.value { font-size:22px; margin-top:5px; }
-
-.settings {
-  width:45px; height:45px;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
-}
-.settings img { width:62px; }
-
-.screen {
-  flex:1;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:15px;
-  background:url("bg_main.png") center/cover no-repeat;
-}
-
-.progress-row { display:flex; align-items:center; gap:10px; }
-
-.progress {
-  flex:1;
-  height:14px;
-  border:2px solid #7f8f6f;
-  border-radius:6px;
-  overflow:hidden;
-}
-
-.progress-fill {
-  height:100%;
-  width:0%;
-  background:#b7c9a9;
-}
-
-.progress-text { font-size:12px; }
-
-.center {
-  flex:1;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-#clicker {
-  width:220px;
-  height:220px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-}
-
-#coin {
-  width:130%;
-  transition:transform 0.08s;
-  pointer-events:none;
-}
-
-.click-anim { transform:scale(0.85); }
-
-.bottom { display:flex; gap:10px; }
-
-.menu-btn {
-  flex:1;
-  height:70px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-}
-.menu-btn img { width:70%; }
-
-/* МОДАЛКИ */
-.modal {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.85);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-
-  opacity:0;
-  pointer-events:none;
-  transition:0.2s;
-}
-
-.modal.active {
-  opacity:1;
-  pointer-events:auto;
-}
-
-.modal-box {
-  width:340px;
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-
-  transform:scale(0.9);
-  transition:0.2s;
-}
-
-.modal.active .modal-box {
-  transform:scale(1);
-}
-
-/* ДОСТИЖЕНИЯ */
-.ach-card {
-  border:2px solid #7f8f6f;
-  padding:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.ach-locked { opacity:0.4; }
-
-.claim-btn {
-  border:2px solid #7f8f6f;
-  padding:6px 10px;
-  cursor:pointer;
-}
-
-/* POPUP */
-.popup {
-  position:fixed;
-  top:20%;
-  left:50%;
-  transform:translateX(-50%) scale(0.8);
-  background:#000;
-  border:2px solid #7f8f6f;
-  padding:15px;
-  opacity:0;
-  transition:0.3s;
-  z-index:999;
-}
-
-.popup.show {
-  opacity:1;
-  transform:translateX(-50%) scale(1);
-}
+.popup.show{opacity:1;transform:translateX(-50%) scale(1);}
 </style>
 </head>
 
@@ -186,144 +61,128 @@ body {
 
 <div id="app" class="box">
 
-  <div class="top">
-    <div>
-      <div class="label">SCORE</div>
-      <div class="value" id="score">0</div>
-    </div>
+<div class="top">
+<div><div class="label">SCORE</div><div class="value" id="score">0</div></div>
+<div style="text-align:center;"><div class="label">BEST</div><div class="value" id="best">0</div></div>
+<div class="settings box"><img src="settings.png"></div>
+</div>
 
-    <div style="text-align:center;">
-      <div class="label">BEST</div>
-      <div class="value" id="best">0</div>
-    </div>
+<div class="screen box">
+<div class="label">NEXT BACKGROUND</div>
+<div class="progress-row">
+<div class="progress"><div class="progress-fill" id="progress"></div></div>
+<div class="progress-text" id="progressText">0 / 100</div>
+</div>
 
-    <div class="settings box" id="openSettings">
-      <img src="settings.png">
-    </div>
-  </div>
+<div class="center">
+<div id="clicker"><img src="button.png" id="coin"></div>
+</div>
+</div>
 
-  <div class="screen box">
-
-    <div class="label">NEXT BACKGROUND</div>
-
-    <div class="progress-row">
-      <div class="progress">
-        <div class="progress-fill" id="progress"></div>
-      </div>
-      <div class="progress-text" id="progressText">0 / 100</div>
-    </div>
-
-    <div class="center">
-      <div id="clicker">
-        <img src="button.png" id="coin">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bottom">
-    <div class="menu-btn box" id="openUpgrade"><img src="upgrade.png"></div>
-    <div class="menu-btn box"><img src="stats.png"></div>
-    <div class="menu-btn box" id="openAch"><img src="trophy.png"></div>
-  </div>
+<div class="bottom">
+<div class="menu-btn box"><img src="upgrade.png"></div>
+<div class="menu-btn box"><img src="stats.png"></div>
+<div class="menu-btn box" id="openAch"><img src="trophy.png"></div>
+</div>
 
 </div>
 
-<!-- ДОСТИЖЕНИЯ -->
+<!-- достижения -->
 <div class="modal" id="achModal">
-  <div class="modal-box box" id="achList"></div>
+<div class="modal-box box">
+<div class="ach-card">
+<span id="achText"></span>
+<div class="btn" id="claimBtn">CLAIM</div>
+</div>
+</div>
 </div>
 
 <div class="popup" id="popup"></div>
 
 <script>
-let score = 0;
-let best = 0;
+let score=0,best=0;
+let realClicks=0;
 
-const achievements = [
-  {goal:10, reward:50, claimed:false},
-  {goal:100, reward:500, claimed:false},
-  {goal:1000, reward:1000, claimed:false},
-  {goal:10000, reward:5000, claimed:false},
-  {goal:100000, reward:50000, claimed:false},
-  {goal:1000000, reward:500000, claimed:false},
-];
+const goals=[10,100,1000,10000,100000,1000000];
+const rewards=[50,500,1000,5000,50000,500000];
 
+let currentAch=0;
+let claimed=false;
+
+/* формат */
+function format(n){
+if(n>=1000000) return (n/1000000)+"M";
+if(n>=1000) return (n/1000)+"K";
+return n;
+}
+
+/* клик */
+clicker.onclick=()=>{
+coin.classList.add("click-anim");
+setTimeout(()=>coin.classList.remove("click-anim"),80);
+
+score++;
+realClicks++;
+updateUI();
+};
+
+/* UI */
 function updateUI(){
-  scoreEl.innerText = score;
-  if(score>best){best=score; bestEl.innerText=best;}
+scoreEl.innerText=score;
+if(score>best){best=score;bestEl.innerText=best;}
 
-  let p = score%100;
-  progress.style.width=p+"%";
-  progressText.innerText=p+" / 100";
+let p=score%100;
+progress.style.width=p+"%";
+progressText.innerText=p+" / 100";
 
-  checkAchievements();
+/* достижение */
+if(realClicks>=goals[currentAch] && !claimed){
+showPopup("ACH "+format(goals[currentAch]));
+}
 }
 
-function checkAchievements(){
-  achievements.forEach(a=>{
-    if(score>=a.goal && !a.unlocked){
-      a.unlocked=true;
-      showPopup("NEW ACHIEVEMENT: "+a.goal);
-      renderAchievements();
-    }
-  });
+/* popup */
+function showPopup(t){
+popup.innerText=t;
+popup.classList.add("show");
+setTimeout(()=>popup.classList.remove("show"),2000);
 }
 
-function showPopup(text){
-  const p = document.getElementById("popup");
-  p.innerText = text;
-  p.classList.add("show");
-
-  setTimeout(()=>p.classList.remove("show"),2000);
-}
-
-function renderAchievements(){
-  const list = document.getElementById("achList");
-  list.innerHTML="";
-
-  achievements.forEach((a,i)=>{
-    let div=document.createElement("div");
-    div.className="ach-card "+(!a.unlocked?"ach-locked":"");
-
-    let left=`${a.goal} clicks`;
-    let right="";
-
-    if(a.unlocked && !a.claimed){
-      right=`<div class="claim-btn" onclick="claim(${i})">CLAIM (${a.reward})</div>`;
-    } else if(a.claimed){
-      right="DONE";
-    }
-
-    div.innerHTML=`<span>${left}</span>${right}`;
-    list.appendChild(div);
-  });
-}
-
-function claim(i){
-  if(achievements[i].claimed) return;
-
-  achievements[i].claimed=true;
-  score += achievements[i].reward;
-
-  renderAchievements();
-  updateUI();
-}
-
-clicker.onclick = ()=>{
-  score++;
-  updateUI();
-};
-
+/* меню */
 openAch.onclick=()=>{
-  achModal.classList.add("active");
-  renderAchievements();
+achModal.classList.add("active");
+updateAchUI();
+};
+achModal.onclick=()=>achModal.classList.remove("active");
+
+/* UI достижения */
+function updateAchUI(){
+if(currentAch>=goals.length){
+achText.innerText="ALL DONE";
+claimBtn.style.display="none";
+return;
+}
+
+achText.innerText="GOAL "+format(goals[currentAch]);
+
+if(realClicks>=goals[currentAch] && !claimed){
+claimBtn.style.display="block";
+}else{
+claimBtn.style.display="none";
+}
+}
+
+/* забрать */
+claimBtn.onclick=()=>{
+score+=rewards[currentAch];
+claimed=true;
+currentAch++;
+claimed=false;
+updateUI();
+updateAchUI();
 };
 
-achModal.onclick=()=>{
-  achModal.classList.remove("active");
-};
-
+Telegram.WebApp.expand();
 </script>
 
 </body>
