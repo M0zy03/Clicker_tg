@@ -1,340 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  background: #000;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Press Start 2P', monospace;
-  color: #b7c9a9;
-}
-
-.box {
-  border: 2px solid #7f8f6f;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(183, 201, 169, 0.15);
-}
-
-#app {
-  width: 420px;
-  height: 90vh;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.label { font-size: 10px; opacity: 0.7; }
-.value { font-size: 22px; margin-top: 5px; }
-
-.settings {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-.settings img { width: 62px; }
-
-.screen {
-  flex: 1;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  background: url("bg_main.png") center/cover no-repeat;
-}
-
-.progress-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.progress {
-  flex: 1;
-  height: 14px;
-  border: 2px solid #7f8f6f;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #b7c9a9;
-}
-
-.progress-text { font-size: 12px; }
-
-.center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#clicker {
-  width: 220px;
-  height: 220px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-#coin {
-  width: 130%;
-  transition: transform 0.08s ease;
-  pointer-events: none;
-}
-
-.click-anim { transform: scale(0.85); }
-
-.bottom {
-  display: flex;
-  gap: 10px;
-}
-
-.menu-btn {
-  flex: 1;
-  height: 70px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-.menu-btn img { width: 70%; }
-
-/* МОДАЛКИ */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-box {
-  width: 340px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* 🔥 НОВЫЙ СТИЛЬ ПРОКАЧКИ */
-.upgrade-card {
-  border: 2px solid #7f8f6f;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.up-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-}
-
-.up-sub {
-  font-size: 10px;
-  opacity: 0.6;
-}
-
-.up-btn {
-  border: 2px solid #7f8f6f;
-  padding: 10px;
-  text-align: center;
-  cursor: pointer;
-}
-
-.switch {
-  width: 50px;
-  height: 25px;
-  border: 2px solid #7f8f6f;
-  position: relative;
-}
-
-.switch::after {
-  content: "";
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  transition: 0.2s;
-}
-
-.switch.active::after {
-  left: 25px;
-}
-
-.range-wrapper {
-  position: relative;
-}
-
-.range-fill {
-  position: absolute;
-  height: 100%;
-  background: #b7c9a9;
-  pointer-events: none;
-}
-
-input[type=range] {
-  width: 100%;
-  height: 10px;
-  background: #111;
-  border: 2px solid #7f8f6f;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  width: 20px;
-  height: 20px;
-  background: #b7c9a9;
-  border: 2px solid #7f8f6f;
-}
-</style>
-</head>
-
-<body>
-
-<div id="app" class="box">
-
-  <div class="top">
-    <div>
-      <div class="label">SCORE</div>
-      <div class="value" id="score">0</div>
-    </div>
-
-    <div style="text-align:center;">
-      <div class="label">BEST</div>
-      <div class="value" id="best">0</div>
-    </div>
-
-    <div class="settings box" id="openSettings">
-      <img src="settings.png">
-    </div>
-  </div>
-
-  <div class="screen box">
-
-    <div class="label">NEXT BACKGROUND</div>
-
-    <div class="progress-row">
-      <div class="progress">
-        <div class="progress-fill" id="progress"></div>
-      </div>
-      <div class="progress-text" id="progressText">0 / 100</div>
-    </div>
-
-    <div class="center">
-      <div id="clicker">
-        <img src="button.png" id="coin">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bottom">
-    <div class="menu-btn box" id="openUpgrade"><img src="upgrade.png"></div>
-    <div class="menu-btn box"><img src="stats.png"></div>
-    <div class="menu-btn box"><img src="trophy.png"></div>
-  </div>
-
-</div>
-
-<!-- НАСТРОЙКИ -->
-<div class="modal" id="settingsModal">
-  <div class="modal-box box">
-
-    <div>
-      <div style="margin-bottom:10px;">VOLUME</div>
-      <div class="range-wrapper">
-        <div class="range-fill" id="volumeFill"></div>
-        <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
-      </div>
-    </div>
-
-    <div id="closeSettings" style="text-align:center;cursor:pointer;">
-      CLOSE
-    </div>
-
-  </div>
-</div>
-
-<!-- ПРОКАЧКА -->
-<div class="modal" id="upgradeModal">
-  <div class="modal-box box">
-
-    <!-- АВТОКЛИКЕР -->
-    <div class="upgrade-card" id="autoCard">
-      <div class="up-header">
-        <span>AUTO CLICKER</span>
-        <span id="autoLvl">LVL 0</span>
-      </div>
-      <div class="up-sub" id="autoPower">+0 CPS</div>
-
-      <div class="up-btn" id="autoBuy">BUY (150)</div>
-      <div class="switch" id="autoToggle" style="display:none;"></div>
-    </div>
-
-    <!-- СИЛА КЛИКА -->
-    <div class="upgrade-card">
-      <div class="up-header">
-        <span>CLICK POWER</span>
-        <span id="powerLvl">LVL 1</span>
-      </div>
-      <div class="up-sub" id="powerValue">+1 / click</div>
-
-      <div class="up-btn" id="powerBuy">BUY (150)</div>
-    </div>
-
-    <div id="closeUpgrade" style="text-align:center;cursor:pointer;">
-      CLOSE
-    </div>
-
-  </div>
-</div>
-
-<audio id="clickSound" src="click.mp3"></audio>
-
 <script>
 let score = 0;
 let best = 0;
-let volume = 1;
+let volumeValue = 1; // 🔥 фикс конфликта
 
 let clickPower = 1;
 
 let autoLevel = 0;
 let autoActive = false;
+
+/* 🔥 ДОБАВИЛ ВСЕ ЭЛЕМЕНТЫ */
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const progressEl = document.getElementById("progress");
+const progressText = document.getElementById("progressText");
+
+const volumeInput = document.getElementById("volume");
+const volumeFill = document.getElementById("volumeFill");
+
+const autoLvl = document.getElementById("autoLvl");
+const autoPower = document.getElementById("autoPower");
+
+const powerLvl = document.getElementById("powerLvl");
+const powerValue = document.getElementById("powerValue");
 
 const coin = document.getElementById("coin");
 const clickSound = document.getElementById("clickSound");
@@ -345,7 +32,7 @@ clicker.onclick = () => {
   setTimeout(()=>coin.classList.remove("click-anim"),80);
 
   clickSound.currentTime = 0;
-  clickSound.volume = volume;
+  clickSound.volume = volumeValue;
   clickSound.play();
 
   score += clickPower;
@@ -363,14 +50,15 @@ setInterval(()=>{
 /* UI */
 function updateUI(){
   scoreEl.innerText = score;
+
   if(score>best){
     best=score;
     bestEl.innerText=best;
   }
 
-  let p = score%100;
-  progress.style.width=p+"%";
-  progressText.innerText=p+" / 100";
+  let p = score % 100;
+  progressEl.style.width = p + "%";
+  progressText.innerText = p + " / 100";
 
   autoLvl.innerText="LVL "+autoLevel;
   autoPower.innerText="+"+autoLevel+" CPS";
@@ -389,6 +77,7 @@ autoBuy.onclick=()=>{
 
     autoBuy.innerText="UPGRADE ("+(150*(autoLevel+1))+")";
     autoToggle.style.display="block";
+    updateUI();
   }
 };
 
@@ -406,13 +95,14 @@ powerBuy.onclick=()=>{
     clickPower++;
 
     powerBuy.innerText="UPGRADE ("+(150*clickPower)+")";
+    updateUI();
   }
 };
 
-/* ГРОМКОСТЬ */
-volume.oninput=(e)=>{
-  volume=e.target.value;
-  volumeFill.style.width=(volume*100)+"%";
+/* 🔥 ГРОМКОСТЬ (ПОЛНОСТЬЮ ПОЧИНЕНА) */
+volumeInput.oninput = (e) => {
+  volumeValue = parseFloat(e.target.value);
+  volumeFill.style.width = (volumeValue * 100) + "%";
 };
 
 /* МОДАЛКИ */
@@ -424,6 +114,3 @@ closeUpgrade.onclick=()=>upgradeModal.style.display="none";
 
 Telegram.WebApp.expand();
 </script>
-
-</body>
-</html>
